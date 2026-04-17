@@ -1,4 +1,4 @@
-import { BrowserRouter as Routes, Route,} from 'react-router-dom';
+import { Route, Routes,} from 'react-router-dom';
 import DashboardShell from './components/layout/DashboardShell';
 import Overview from './pages/dashboard/Overview';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -49,8 +49,6 @@ function App() {
 
       </Route>
 
-      {/* Catch-all: If no route matches, go to dashboard */}
-      {/* <Route path="*" element={<Navigate to="/dashboard" replace />} /> */}
     </Routes>
   );
 }

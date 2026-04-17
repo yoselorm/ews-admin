@@ -75,7 +75,7 @@ const UserManagement = () => {
             dispatch(resetUserStatus());
             dispatch(fetchUsers({ page: currentPage, limit: 15, search: searchTerm, role: roleFilter, community_id: communityFilter }));
         }
-    }, [userSuccess]);
+    }, [userSuccess, communityFilter, currentPage, dispatch, initialForm, roleFilter, searchTerm]);
 
     const openEdit = (user) => {
         setSelectedUser(user);

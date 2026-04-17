@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useSearchParams,Link } from 'react-router-dom';
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { clearStatus, resetPassword } from '../redux/AuthSlice';
 
 const AdminResetPassword = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   const { loading, error, message } = useSelector((state) => state.auth);

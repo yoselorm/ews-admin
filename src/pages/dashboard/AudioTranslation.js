@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    fetchAudioTranslations, uploadAudioTranslation, deleteAudioTranslation, clearAudioStatus
+    fetchAudioTranslations, uploadAudioTranslation, deleteAudioTranslation,
 } from '../../redux/AudioTranslationSlice';
 import { fetchLanguages } from '../../redux/LanguageSlice';
 import {
     Plus, Search, Trash2, Mic, Play, Pause, X,
-    Loader2, AlertTriangle, Music, Filter, Globe,
+    Loader2, AlertTriangle, Music, Globe,
     Check
 } from 'lucide-react';
 

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; 
 import { fetchCategories, createCategory, updateCategory, deleteCategory, resetStatus } from '../../redux/SafetyCategorySlice';
-import { Plus, Edit3, Trash2, X, Loader2, ShieldAlert, Tag, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { Plus, Edit3, Trash2, X, Loader2, ShieldAlert, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 
 const DEFAULT_FORM = { name: '', icon_name: 'thermometer', is_active: true };
 

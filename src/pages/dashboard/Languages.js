@@ -5,8 +5,8 @@ import {
   fetchLanguages, createLanguage, updateLanguage, deleteLanguage 
 } from '../../redux/LanguageSlice';
 import { 
-  Plus, Search, Edit3, Trash2, Languages, Check, X, 
-  Loader2, AlertTriangle, Globe
+  Plus, Search, Edit3, Trash2, Languages,  X, 
+  Loader2, AlertTriangle,
 } from 'lucide-react';
 
 import Pagination from '../../components/Pagination'; 

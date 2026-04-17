@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchAdminAlerts, resolveAlert, deleteAlert } from '../../redux/AlertSlice';
 import { 
   AlertTriangle, CheckCircle2, Trash2, Filter, 
-  Clock, MapPin, Activity, X, Loader2, ShieldCheck, Search, Map
+  Clock, MapPin, Activity, Loader2, ShieldCheck, Map
 } from 'lucide-react';
 import moment from 'moment';
 

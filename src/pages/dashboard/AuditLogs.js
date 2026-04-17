@@ -6,7 +6,7 @@ import Pagination from '../../components/Pagination';
 
 const AuditLogs = () => {
   const dispatch = useDispatch();
-  const { auditLogs, loading, meta } = useSelector((state) => state.stats);
+  const { auditLogs,  meta } = useSelector((state) => state.stats);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 

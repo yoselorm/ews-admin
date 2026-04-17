@@ -11,7 +11,7 @@ const AdminLogin = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+    const { loading, isAuthenticated } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (isAuthenticated) {

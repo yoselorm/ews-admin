@@ -316,10 +316,6 @@ const GeographyPage = () => {
     </div>
   );
 
-  const colVisible = (col) => {
-    // On lg+ always show all. On mobile show only the active column.
-    return true; // Visibility controlled via CSS classes below
-  };
 
   return (
     <div className="space-y-4">

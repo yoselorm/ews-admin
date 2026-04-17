@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Routes, Route,} from 'react-router-dom';
 import DashboardShell from './components/layout/DashboardShell';
 import Overview from './pages/dashboard/Overview';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -21,11 +21,9 @@ import AdminManagement from './pages/dashboard/AdminManagement';
 function App() {
   return (
     <Routes>
-      {/* --- Public Routes --- */}
       <Route path="/" element={<AdminLogin />} />
       <Route path="/forgot-password" element={<AdminForgotPassword />} />
       <Route path="/reset-password" element={<AdminResetPassword />} />
-      {/* --- Private Dashboard Routes --- */}
       <Route
         path="/dashboard"
         element={
@@ -36,7 +34,6 @@ function App() {
       >
 
         <Route index element={<Overview />} />
-        {/* Other nested pages */}
         <Route path="weather-data" element={<WeatherData />} />
         <Route path="thresholds" element={<Thresholds />} />
         <Route path="audit-logs" element={<AuditLogs />} />

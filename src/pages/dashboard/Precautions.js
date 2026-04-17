@@ -7,8 +7,7 @@ import {
 import { fetchThresholds } from '../../redux/ThresholdSlice';
 import Pagination from '../../components/Pagination';
 import {
-    Plus, Search, Info, Trash2, Edit3, MessageSquare,
-    Users, Loader2, X, ShieldAlert, AlertCircle, CheckCircle
+    Plus, Search, Trash2, Edit3, Loader2, X, ShieldAlert,
 } from 'lucide-react';
 
 const DEFAULT_FORM = {

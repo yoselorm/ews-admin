@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import moment from 'moment';
 import {
     fetchUsers, deleteUser, resetUserStatus,
     createPregnantWoman, createLactatingMother, createHealthWorker, createAssemblyOfficial,
@@ -11,12 +10,11 @@ import { fetchCommunityList } from '../../redux/CommunitySlice';
 import Pagination from '../../components/Pagination';
 import {
     Search, Plus, Eye, Edit3, Trash2, Filter,
-    User, Mail, Phone, Calendar, MapPin, Loader2, X,
+    User, Loader2, X,
     Heart, ShieldCheck, Briefcase, AlertTriangle, UserCheck, Baby
 } from 'lucide-react';
 
-// ─── Role-specific payload builders ──────────────────────────────────────────
-// Only the fields that belong to each role are sent to the backend
+
 const BASE_FIELDS = ['first_name', 'last_name', 'email', 'phone_number', 'dob', 'gender', 'community_id', 'role'];
 
 const ROLE_FIELDS = {

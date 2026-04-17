@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import {
-    LayoutDashboard, Users, ClipboardList, Settings,
-    Bell, LogOut, Menu, X, ShieldCheck, ChevronRight,
+    LayoutDashboard, Users, ClipboardList, 
+    Bell, LogOut, Menu, X, ShieldCheck, 
     Loader2, CloudSun, Gauge, Globe,
     Languages,
     Music,
@@ -43,11 +43,9 @@ const DashboardShell = () => {
     ];
 
     return (
-        /* FIX 1: Set h-screen and overflow-hidden on the wrapper */
         <div className="h-screen bg-slate-50 flex overflow-hidden">
             
-            {/* --- SIDEBAR --- */}
-            {/* FIX 2: Ensure h-full is set so the sidebar occupies the full locked height */}
+           
             <aside
                 className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col h-full ${
                     isSidebarOpen ? 'w-64' : 'w-20'
@@ -62,7 +60,6 @@ const DashboardShell = () => {
                     )}
                 </div>
 
-                {/* Sidebar links now scroll internally if they are too many, but don't move the sidebar itself */}
                 <nav className="flex-1 px-4 mt-4 space-y-2 overflow-y-auto custom-scrollbar">
                     {menuItems.map((item) => {
                         const isActive = location.pathname === item.path;
@@ -109,11 +106,9 @@ const DashboardShell = () => {
                 </div>
             </aside>
 
-            {/* --- MAIN CONTENT AREA --- */}
-            {/* FIX 3: flex-1 h-full overflow-hidden ensures the header stays at the top */}
+    
             <main className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
                 
-                {/* Header: Fixed at the top */}
                 <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}

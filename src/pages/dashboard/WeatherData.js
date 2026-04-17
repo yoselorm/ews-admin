@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CloudSun, Search, Calendar, Eye, Download,
-  MapPin, Wind, Thermometer, Droplets, Sun, X, Loader2,
-  ChevronLeft, ChevronRight, Activity
+  MapPin, Droplets, Sun, X, Activity
 } from 'lucide-react';
 import { fetchWeatherData } from '../../redux/WeatherSlice';
 import Pagination from '../../components/Pagination';

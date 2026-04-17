@@ -16,14 +16,12 @@ import {
   Edit3, Trash2, Loader2, X, ShieldAlert, Globe, ArrowLeft
 } from 'lucide-react';
 
-// ─── Tiny animated dot badge ──────────────────────────────────────────────────
 const CountBadge = ({ count }) => (
   <span className="ml-auto text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full tabular-nums">
     {count ?? 0}
   </span>
 );
 
-// ─── Column shell ─────────────────────────────────────────────────────────────
 const Column = ({ icon: Icon, title, count, onAdd, showAdd, loading, empty, emptyIcon: EmptyIcon, emptyLabel, children, footer }) => (
   <div className="flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden h-full">
     {/* Header */}
@@ -72,7 +70,6 @@ const Column = ({ icon: Icon, title, count, onAdd, showAdd, loading, empty, empt
   </div>
 );
 
-// ─── Region row ───────────────────────────────────────────────────────────────
 const RegionRow = ({ item, active, onClick, onEdit, onDelete }) => (
   <div className="group relative">
     <button
@@ -114,7 +111,6 @@ const RegionRow = ({ item, active, onClick, onEdit, onDelete }) => (
   </div>
 );
 
-// ─── District row ─────────────────────────────────────────────────────────────
 const DistrictRow = ({ item, active, onClick, onEdit, onDelete }) => (
   <div className="group relative">
     <button
@@ -139,7 +135,6 @@ const DistrictRow = ({ item, active, onClick, onEdit, onDelete }) => (
   </div>
 );
 
-// ─── Community card ───────────────────────────────────────────────────────────
 const CommunityCard = ({ item, onEdit, onDelete }) => (
   <div className="group flex items-start gap-3 p-3.5 rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm bg-white transition-all">
     <div className="shrink-0 p-2 bg-purple-50 rounded-lg text-purple-500 mt-0.5">
@@ -169,7 +164,6 @@ const CommunityCard = ({ item, onEdit, onDelete }) => (
   </div>
 );
 
-// ─── Portal Modal Shell ────────────────────────────────────────────────────────
 const ModalShell = ({ title, onClose, children }) => createPortal(
   <div
     className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
@@ -188,7 +182,6 @@ const ModalShell = ({ title, onClose, children }) => createPortal(
   document.body
 );
 
-// ─── Delete Modal ─────────────────────────────────────────────────────────────
 const DeleteModal = ({ label, itemName, onConfirm, onCancel, loading }) => createPortal(
   <div
     className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
@@ -215,7 +208,6 @@ const DeleteModal = ({ label, itemName, onConfirm, onCancel, loading }) => creat
   document.body
 );
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
 const GeographyPage = () => {
   const dispatch = useDispatch();
 
@@ -226,12 +218,10 @@ const GeographyPage = () => {
   const [activeRegion, setActiveRegion] = useState(null);
   const [activeDistrict, setActiveDistrict] = useState(null);
 
-  // modal state: { type: 'region'|'district'|'community', mode: 'add'|'edit'|'delete', item: null }
   const [modalState, setModalState] = useState(null);
   const [formData, setFormData] = useState({});
 
-  // Mobile: which column is visible
-  const [mobileView, setMobileView] = useState('regions'); // 'regions' | 'districts' | 'communities'
+  const [mobileView, setMobileView] = useState('regions'); 
 
   useEffect(() => {
     dispatch(fetchRegions({ limit: 10 }));

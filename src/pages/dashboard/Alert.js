@@ -4,28 +4,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchAdminAlerts, resolveAlert, deleteAlert } from '../../redux/AlertSlice';
 import { 
   AlertTriangle, CheckCircle2, Trash2, Filter, 
-  Clock, MapPin, Activity, X, Loader2, ShieldCheck, Search
+  Clock, MapPin, Activity, X, Loader2, ShieldCheck, Search, Map
 } from 'lucide-react';
 import moment from 'moment';
 
 import Pagination from '../../components/Pagination';
+import { fetchCommunityList } from '../../redux/CommunitySlice';
 
 const AlertsManagement = () => {
   const dispatch = useDispatch();
   const { alerts, loading, actionLoading, meta } = useSelector((state) => state.alerts);
+  // Assuming your community slice stores the array in list or list
+  const { list } = useSelector((state) => state.communities);
 
   // Modals & Target State
   const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [targetAlert, setTargetAlert] = useState(null);
   
-  const [filters, setFilters] = useState({ risk_level: '', is_resolved: '', page: 1, limit: 10 });
+  const [filters, setFilters] = useState({ risk_level: '', is_resolved: '', page: 1, limit: 10 , community_id: ''});
 
   useEffect(() => {
     dispatch(fetchAdminAlerts(filters));
   }, [filters, dispatch]);
 
-  // --- Handlers ---
+   useEffect(() => {
+          dispatch(fetchCommunityList());
+      }, [dispatch])
+
   const handleConfirmResolve = async () => {
     if (!targetAlert) return;
     const result = await dispatch(resolveAlert(targetAlert.id));
@@ -74,6 +80,23 @@ const AlertsManagement = () => {
           <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Global Triage</span>
         </div>
         
+        {/* NEW: Community Filter Dropdown */}
+        <div className="relative">
+           <select 
+            className="bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all appearance-none"
+            value={filters.community_id}
+            onChange={(e) => setFilters({...filters, community_id: e.target.value, page: 1})}
+          >
+            <option value="">All Communities</option>
+            {list?.map((community) => (
+              <option key={community.id} value={community.id}>
+                {community.name}
+              </option>
+            ))}
+          </select>
+          <Map size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        </div>
+
         <select 
           className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
           onChange={(e) => setFilters({...filters, risk_level: e.target.value, page: 1})}
@@ -128,7 +151,7 @@ const AlertsManagement = () => {
                 <td className="px-10 py-8">
                   <div className="flex items-center gap-3 text-sm font-bold text-slate-600">
                     <div className="p-2 bg-slate-100 rounded-xl"><MapPin size={16} /></div>
-                    {alert.community?.name || 'Central District'}
+                    {alert.community?.name || 'Unknown Location'}
                   </div>
                 </td>
                 <td className="px-10 py-8">
@@ -173,7 +196,7 @@ const AlertsManagement = () => {
         />
       </div>
 
-      {/* Modals Implementation */}
+      {/* Modals remain unchanged */}
       <AnimatePresence>
         {(isResolveModalOpen || isDeleteModalOpen) && (
           <motion.div 

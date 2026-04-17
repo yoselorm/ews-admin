@@ -10,6 +10,14 @@ export const fetchCommunities = createAsyncThunk('communities/fetch', async (par
         return rejectWithValue(err.response?.data?.message || 'Failed to fetch communities');
     }
 });
+export const fetchCommunityList = createAsyncThunk('communities/fetchList', async (params, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/v1/admin/communities/lookup');
+        return response.data;
+    } catch (err) {
+        return rejectWithValue(err.response?.data?.message || 'Failed to fetch communities');
+    }
+});
 
 export const createCommunity = createAsyncThunk('communities/create', async (data, { rejectWithValue }) => {
     try {
@@ -48,7 +56,8 @@ const communitySlice = createSlice({
         communitiesLoading: false,     
         communityActionLoading: false, 
         communitySuccess: false,      
-        communityError: null         
+        communityError: null ,
+        list:[]        
     },
     reducers: {
         resetCommunityStatus: (state) => {
@@ -127,7 +136,20 @@ const communitySlice = createSlice({
             .addCase(deleteCommunity.rejected, (state, action) => {
                 state.communityActionLoading = false;
                 state.communityError = action.payload;
-            });
+            })
+            .addCase(fetchCommunityList.pending, (state) => {
+                state.communitiesLoading = true;
+                state.communityError = null;
+            })
+            .addCase(fetchCommunityList.fulfilled, (state, action) => {
+                state.communitiesLoading = false;
+                state.list = action.payload.data; 
+            })
+            .addCase(fetchCommunityList.rejected, (state, action) => {
+                state.communitiesLoading = false;
+                state.communityError = action.payload;
+             })
+            ;
     }
 });
 

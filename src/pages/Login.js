@@ -39,7 +39,7 @@ const AdminLogin = () => {
                 </div>
 
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
-                    Admin Portal
+                    EWS Admin Portal
                 </h2>
                 <p className="mt-2 text-center text-sm text-slate-600">
                     Secure access for healthcare administrators

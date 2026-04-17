@@ -58,7 +58,7 @@ const DashboardShell = () => {
                         <ShieldCheck size={24} color="white" />
                     </div>
                     {isSidebarOpen && (
-                        <span className="text-xl font-bold text-slate-900 truncate">AdminHQ</span>
+                        <span className="text-xl font-bold text-slate-900 truncate">EWSAdmin</span>
                     )}
                 </div>
 

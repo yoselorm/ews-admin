@@ -17,7 +17,11 @@ export const uploadAudioTranslation = createAsyncThunk(
   'audioTranslations/upload',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/v1/admin/audio-translations', formData);
+      const response = await api.post('/v1/admin/audio-translations', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Failed to upload audio');

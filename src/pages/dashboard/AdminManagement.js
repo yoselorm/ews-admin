@@ -2,29 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  fetchAdmins, createAdmin, updateAdmin, deleteAdmin, clearAdminStatus 
+  fetchAdmins, createAdmin, updateAdmin, deleteAdmin 
 } from '../../redux/AdminSlice';
 import { 
   Plus, Search, Edit3, Trash2, ShieldCheck, X, 
-  Loader2, AlertTriangle, Mail, Phone, User, Lock, Calendar
+  Loader2, AlertTriangle, Mail, Phone, User, Lock, Calendar, Check
 } from 'lucide-react';
 
 import Pagination from '../../components/Pagination'; 
 
 const AdminManagement = () => {
   const dispatch = useDispatch();
-  const { admins, loading, actionLoading, meta, error } = useSelector((state) => state.admins);
+  const { admins, loading, actionLoading, meta } = useSelector((state) => state.admins);
 
   // States
   const [isUpsertModalOpen, setIsUpsertModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [targetAdmin, setTargetAdmin] = useState(null);
   
+  // Available roles list
+  const availableRoles = [
+    'manage_thresholds', 
+    'manage_users', 
+    'manage_weather', 
+    'manage_alerts'
+  ];
+
   const [formData, setFormData] = useState({ 
     first_name: '', last_name: '', email: '', 
     password: '', password_confirmation: '', 
     phone_number: '', gender: 'Male', dob: '', 
-    status: 'active', roles: ['admin'] 
+    status: 'active', roles: [] 
   });
   
   const [filters, setFilters] = useState({ 
@@ -36,6 +44,15 @@ const AdminManagement = () => {
   }, [filters, dispatch]);
 
   // --- Handlers ---
+  const handleToggleRole = (role) => {
+    setFormData(prev => ({
+      ...prev,
+      roles: prev.roles.includes(role) 
+        ? prev.roles.filter(r => r !== role) 
+        : [...prev.roles, role]
+    }));
+  };
+
   const handleUpsert = async (e) => {
     e.preventDefault();
     const action = targetAdmin 
@@ -55,13 +72,18 @@ const AdminManagement = () => {
   const openUpsert = (admin = null) => {
     setTargetAdmin(admin);
     if (admin) {
-      setFormData({ ...admin, password: '', password_confirmation: '' });
+      setFormData({ 
+        ...admin, 
+        password: '', 
+        password_confirmation: '',
+        roles: admin.roles || [] 
+      });
     } else {
       setFormData({ 
         first_name: '', last_name: '', email: '', 
         password: '', password_confirmation: '', 
         phone_number: '', gender: 'Male', dob: '', 
-        status: 'active', roles: ['admin'] 
+        status: 'active', roles: [] 
       });
     }
     setIsUpsertModalOpen(true);
@@ -119,7 +141,7 @@ const AdminManagement = () => {
           <thead className="bg-slate-50/50">
             <tr>
               <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Administrator</th>
-              <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Contact Info</th>
+              <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Roles</th>
               <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Status</th>
               <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[3px] text-right">Action</th>
             </tr>
@@ -136,14 +158,17 @@ const AdminManagement = () => {
                     </div>
                     <div>
                       <span className="block font-extrabold text-slate-800 text-lg">{admin.first_name} {admin.last_name}</span>
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{admin.roles?.[0] || 'Staff'}</span>
+                      <span className="text-xs text-slate-400 font-bold">{admin.email}</span>
                     </div>
                   </div>
                 </td>
                 <td className="px-10 py-7">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-slate-600 font-bold text-sm"><Mail size={14}/> {admin.email}</div>
-                    <div className="flex items-center gap-2 text-slate-400 font-bold text-xs"><Phone size={14}/> {admin.phone_number}</div>
+                  <div className="flex flex-wrap gap-1 max-w-[200px]">
+                    {admin.roles?.map(role => (
+                      <span key={role} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-tighter">
+                        {role.replace('manage_', '').replace('_', ' ')}
+                      </span>
+                    ))}
                   </div>
                 </td>
                 <td className="px-10 py-7">
@@ -186,46 +211,71 @@ const AdminManagement = () => {
 
                 <form onSubmit={handleUpsert} className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">First Name</label>
-                      <input required value={formData.first_name} onChange={(e) => setFormData({...formData, first_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                      <input required value={formData.first_name} onChange={(e) => setFormData({...formData, first_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Last Name</label>
-                      <input required value={formData.last_name} onChange={(e) => setFormData({...formData, last_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                      <input required value={formData.last_name} onChange={(e) => setFormData({...formData, last_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-                    <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email</label>
+                      <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone</label>
+                      <input value={formData.phone_number} onChange={(e) => setFormData({...formData, phone_number: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
+                    </div>
                   </div>
 
                   {!targetAdmin && (
                     <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
-                        <input type="password" required value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                        <input type="password" required value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-1">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm</label>
-                        <input type="password" required value={formData.password_confirmation} onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                        <input type="password" required value={formData.password_confirmation} onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
                       </div>
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Gender</label>
-                      <select value={formData.gender} onChange={(e) => setFormData({...formData, gender: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none">
+                      <select value={formData.gender} onChange={(e) => setFormData({...formData, gender: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
-                        <option value="Other">Other</option>
                       </select>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Birth Date</label>
-                      <input type="date" value={formData.dob} onChange={(e) => setFormData({...formData, dob: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none" />
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">DOB</label>
+                      <input type="date" value={formData.dob} onChange={(e) => setFormData({...formData, dob: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
+                    </div>
+                  </div>
+
+                  {/* Role Selector */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assigned Permissions</label>
+                    <div className="flex flex-wrap gap-2">
+                      {availableRoles.map(role => (
+                        <button
+                          key={role} type="button"
+                          onClick={() => handleToggleRole(role)}
+                          className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all flex items-center gap-2
+                            ${formData.roles.includes(role) 
+                              ? 'bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-100' 
+                              : 'bg-white border-slate-100 text-slate-400 hover:border-purple-200'}`}
+                        >
+                          {formData.roles.includes(role) && <Check size={12} />}
+                          {role.replace('manage_', '').replace('_', ' ')}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
@@ -233,6 +283,25 @@ const AdminManagement = () => {
                     {actionLoading ? <Loader2 className="animate-spin" size={24} /> : (targetAdmin ? 'Save Changes' : 'Register Administrator')}
                   </button>
                 </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- DELETE CONFIRMATION --- */}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[110] bg-slate-900/90 backdrop-blur-xl flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white w-full max-w-md rounded-[48px] p-12 text-center shadow-2xl">
+              <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-red-500 border border-red-100">
+                <AlertTriangle size={40} />
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Remove Admin?</h2>
+              <p className="text-slate-500 font-medium mb-10">You are about to revoke all access for <span className="text-slate-900 font-bold">{targetAdmin?.first_name}</span>. This action is irreversible.</p>
+              <div className="flex flex-col gap-3">
+                <button onClick={confirmDelete} className="w-full bg-red-500 text-white py-5 rounded-3xl font-black shadow-lg shadow-red-100">Delete Account</button>
+                <button onClick={() => setIsDeleteModalOpen(false)} className="w-full bg-slate-50 text-slate-400 py-5 rounded-3xl font-black">Cancel</button>
               </div>
             </motion.div>
           </motion.div>

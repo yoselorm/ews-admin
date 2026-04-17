@@ -90,15 +90,15 @@ const AdminManagement = () => {
   };
 
   return (
-    <div className="p-10 bg-[#F9FAFB] min-h-screen">
+    <div className="bg-[#F9FAFB] min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-12">
         <div className="flex items-center gap-5">
           <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
-            <ShieldCheck className="text-purple-600" size={32} />
+            <ShieldCheck className="text-purple-600" size={24} />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">System Administrators</h1>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Administrators</h1>
             <div className="flex items-center gap-2 mt-1">
               <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
               <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Access Control & Governance</p>
@@ -108,7 +108,7 @@ const AdminManagement = () => {
         
         <button 
           onClick={() => openUpsert()}
-          className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-200 active:scale-95"
+          className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
         >
           <Plus size={20} strokeWidth={3} />
           Create Admin

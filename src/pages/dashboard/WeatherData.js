@@ -34,7 +34,7 @@ const WeatherData = () => {
   };
 
   return (
-    <div className="p-10 bg-[#FBFBFB] min-h-screen">
+    <div className=" bg-[#FBFBFB] min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <div className="flex items-center gap-5">
@@ -42,13 +42,13 @@ const WeatherData = () => {
             <CloudSun size={32} />
           </div>
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Weather Analytics</h1>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Weather Analytics</h1>
             <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[3px]">Environmental Monitoring</p>
           </div>
         </div>
-        <button className="bg-white border-2 border-slate-100 text-slate-900 px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
+        {/* <button className="bg-white border-2 border-slate-100 text-slate-900 px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
           <Download size={20} strokeWidth={3}/> Export Dataset
-        </button>
+        </button> */}
       </div>
 
       {/* Filter Bar */}

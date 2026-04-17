@@ -126,16 +126,16 @@ const UserManagement = () => {
     };
 
     return (
-        <div className="p-4 sm:p-6 lg:p-10 bg-[#FBFBFB] min-h-screen">
+        <div className="bg-[#FBFBFB] min-h-screen">
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10">
                 <div className="flex items-center gap-4">
                     <div className="bg-slate-900 p-3 sm:p-4 rounded-3xl text-white shadow-xl shadow-slate-200 shrink-0">
-                        <UserCheck size={22} className="sm:hidden" />
-                        <UserCheck size={28} className="hidden sm:block" />
+                        <UserCheck size={16} className="sm:hidden" />
+                        <UserCheck size={22} className="hidden sm:block" />
                     </div>
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">User Management</h1>
+                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">User Management</h1>
                         <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[3px]">System Directory & Enrollment</p>
                     </div>
                 </div>

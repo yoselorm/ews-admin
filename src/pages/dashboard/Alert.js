@@ -54,15 +54,15 @@ const AlertsManagement = () => {
   };
 
   return (
-    <div className="p-10 bg-[#F9FAFB] min-h-screen">
+    <div className="bg-[#F9FAFB] min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-end mb-12">
         <div className="flex items-center gap-5">
           <div className="bg-white p-4 rounded-[28px] shadow-sm border border-slate-100">
-            <Activity className="text-purple-600" size={32} />
+            <Activity className="text-purple-600" size={24} />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Climate Alerts</h1>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Climate Alerts</h1>
             <p className="text-slate-400 font-bold text-xs uppercase tracking-[3px] mt-1">Real-time Emergency Monitoring</p>
           </div>
         </div>

@@ -14,7 +14,6 @@ export const fetchWeatherData = createAsyncThunk(
   }
 );
 
-// 2. Get Specific Weather Data Entry
 export const fetchWeatherDetail = createAsyncThunk(
   'weather/fetchWeatherDetail',
   async (id, { rejectWithValue }) => {

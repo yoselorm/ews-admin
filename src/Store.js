@@ -11,6 +11,9 @@ import districtReducer from './redux/DistrictSlice';
 import communityReducer from './redux/CommunitySlice';
 import userReducer from './redux/UserSlice';
 import alertReducer from './redux/AlertSlice';
+import languageReducer from './redux/LanguageSlice';
+import audioTranslationReducer from './redux/AudioTranslationSlice';
+import adminReducer from './redux/AdminSlice';
 
 const store = configureStore({
     reducer: {
@@ -25,7 +28,10 @@ const store = configureStore({
         districts: districtReducer,
         communities: communityReducer,
         users: userReducer,
-        alerts: alertReducer
+        alerts: alertReducer,
+        languages: languageReducer,
+        audioTranslations: audioTranslationReducer,
+        admins: adminReducer
     }
 })
 

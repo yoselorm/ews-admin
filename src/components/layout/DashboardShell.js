@@ -3,7 +3,10 @@ import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, Users, ClipboardList, Settings,
     Bell, LogOut, Menu, X, ShieldCheck, ChevronRight,
-    Loader2, CloudSun, Gauge, Globe
+    Loader2, CloudSun, Gauge, Globe,
+    Languages,
+    Music,
+    UserStar
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAdmin } from '../../redux/AuthSlice';
@@ -33,7 +36,10 @@ const DashboardShell = () => {
         { name: 'Safety Guides', path: '/dashboard/safety-guides', icon: ClipboardList },
         { name: 'Geography', path: '/dashboard/geography', icon: Globe },
         { name: 'Users', path: '/dashboard/users', icon: Users },
-        { name: 'Alerts', path: '/dashboard/alerts', icon: Bell }
+        { name: 'Alerts', path: '/dashboard/alerts', icon: Bell },
+        { name: 'Languages', path: '/dashboard/languages', icon: Languages },
+        { name: 'Audio Translations', path: '/dashboard/audio-translations', icon: Music },
+        { name: 'Admin Management', path: '/dashboard/admin', icon: UserStar }
     ];
 
     return (

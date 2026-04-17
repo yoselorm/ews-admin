@@ -14,6 +14,9 @@ import SafetyCategories from './pages/dashboard/SafetyCategories';
 import GeographyPage from './pages/dashboard/Geography';
 import UserManagement from './pages/dashboard/Users';
 import AlertsManagement from './pages/dashboard/Alert';
+import LanguageManagement from './pages/dashboard/Languages';
+import AudioTranslationManagement from './pages/dashboard/AudioTranslation';
+import AdminManagement from './pages/dashboard/AdminManagement';
 
 function App() {
   return (
@@ -43,6 +46,9 @@ function App() {
         <Route path="geography" element={<GeographyPage />} />
         <Route path="users" element={<UserManagement />}  /> 
         <Route path="alerts" element={<AlertsManagement />}  />
+        <Route path="languages" element={<LanguageManagement />}  />
+        <Route path="audio-translations" element={<AudioTranslationManagement />}  />
+        <Route path="admin" element={<AdminManagement />}  />
 
       </Route>
 

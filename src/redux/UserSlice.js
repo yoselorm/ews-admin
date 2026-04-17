@@ -86,10 +86,12 @@ const userSlice = createSlice({
             .addCase(deleteUser.pending, (state) => {
                 state.userActionLoading = true;
                 state.userSuccess = false;
+                state.usersLoading= true;
             })
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.userActionLoading = false;
                 state.userSuccess = true;
+                state.usersLoading= false;
                 state.userList = state.userList.filter(u => u.id !== action.payload);
             })
 

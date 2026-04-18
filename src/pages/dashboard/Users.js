@@ -118,11 +118,11 @@ const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, 
                     <PlusCircle size={14} /> Add
                 </button>
             </div>
-            {formData.medical_conditions.length === 0 && (
+            {formData?.medical_conditions?.length === 0 && (
                 <p className="text-[11px] text-slate-300 italic px-1">No conditions added yet.</p>
             )}
             <div className="space-y-2">
-                {formData.medical_conditions.map((c, i) => (
+                {formData?.medical_conditions?.map((c, i) => (
                     <div key={i} className="flex gap-2 items-center">
                         <input
                             placeholder={`Condition ${i + 1}`}

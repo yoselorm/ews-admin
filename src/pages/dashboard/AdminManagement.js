@@ -6,7 +6,7 @@ import {
 } from '../../redux/AdminSlice';
 import { 
   Plus, Search, Edit3, Trash2, ShieldCheck, X, 
-  Loader2, AlertTriangle,Check
+  Loader2, AlertTriangle, Check, Eye, EyeOff // Added Eye icons
 } from 'lucide-react';
 
 import Pagination from '../../components/Pagination'; 
@@ -20,6 +20,7 @@ const AdminManagement = () => {
   const [isUpsertModalOpen, setIsUpsertModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [targetAdmin, setTargetAdmin] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // Added visibility state
   
   // Available roles list
   const availableRoles = [
@@ -56,23 +57,22 @@ const AdminManagement = () => {
 
 const handleUpsert = async (e) => {
   e.preventDefault();
-
-  let action;
-
+  
+  let payload;
   if (targetAdmin) {
-    const { password, password_confirmation, ...updateData } = formData;
-    
-    action = updateAdmin({ 
-      id: targetAdmin.id, 
-      adminData: updateData 
-    });
+    // If updating, only include password if user typed something
+    const { password, password_confirmation, ...profileData } = formData;
+    payload = password.trim() !== '' ? formData : profileData;
   } else {
-    action = createAdmin(formData);
+    payload = formData;
   }
 
+  const action = targetAdmin 
+    ? updateAdmin({ id: targetAdmin.id, adminData: payload }) 
+    : createAdmin(payload);
+  
   try {
     await dispatch(action).unwrap();
-
     toast.success(`Admin ${targetAdmin ? 'updated' : 'created'} successfully!`);
     setIsUpsertModalOpen(false);
   } catch (err) {
@@ -85,9 +85,7 @@ const confirmDelete = async () => {
 
   try {
     await dispatch(deleteAdmin(targetAdmin.id)).unwrap();
-
     toast.success("Admin deleted successfully");
-    
     setIsDeleteModalOpen(false);
   } catch (err) {
     toast.error(err || "Failed to delete admin");
@@ -96,6 +94,7 @@ const confirmDelete = async () => {
 
   const openUpsert = (admin = null) => {
     setTargetAdmin(admin);
+    setShowPassword(false);
     if (admin) {
       setFormData({ 
         ...admin, 
@@ -257,25 +256,49 @@ const confirmDelete = async () => {
                     </div>
                   </div>
 
-                  {!targetAdmin && (
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
-                        <input type="password" required value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm</label>
-                        <input type="password" required value={formData.password_confirmation} onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none" />
+                  {/* Password Section - Now shown for both with Eye Toggle */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                        {targetAdmin ? 'New Password (Optional)' : 'Password'}
+                      </label>
+                      <div className="relative">
+                        <input 
+                          type={showPassword ? "text" : "password"} 
+                          required={!targetAdmin} 
+                          value={formData.password} 
+                          onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                          placeholder={targetAdmin ? "••••••••" : ""}
+                          className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" 
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-600 transition-colors"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                       </div>
                     </div>
-                  )}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm Password</label>
+                      <input 
+                        type={showPassword ? "text" : "password"} 
+                        required={!targetAdmin && formData.password !== ''} 
+                        value={formData.password_confirmation} 
+                        onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})} 
+                        placeholder={targetAdmin ? "••••••••" : ""}
+                        className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" 
+                      />
+                    </div>
+                  </div>
 
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Gender</label>
                       <select value={formData.gender} onChange={(e) => setFormData({...formData, gender: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                       </select>
                     </div>
                     <div className="space-y-1">

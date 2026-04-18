@@ -73,7 +73,7 @@ export const logoutAdmin = createAsyncThunk(
       localStorage.removeItem('admin_token');
       return true;
     } catch (err) {
-      localStorage.removeItem('admin_token'); // Clear it anyway
+      localStorage.removeItem('admin_token'); 
       return rejectWithValue('Logout error');
     }
   }

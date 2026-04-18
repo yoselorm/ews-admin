@@ -56,21 +56,30 @@ const AdminManagement = () => {
 
 const handleUpsert = async (e) => {
   e.preventDefault();
-  
-  const action = targetAdmin 
-    ? updateAdmin({ id: targetAdmin.id, adminData: formData }) 
-    : createAdmin(formData);
-  
+
+  let action;
+
+  if (targetAdmin) {
+    const { password, password_confirmation, ...updateData } = formData;
+    
+    action = updateAdmin({ 
+      id: targetAdmin.id, 
+      adminData: updateData 
+    });
+  } else {
+    action = createAdmin(formData);
+  }
+
   try {
     await dispatch(action).unwrap();
 
     toast.success(`Admin ${targetAdmin ? 'updated' : 'created'} successfully!`);
-    
     setIsUpsertModalOpen(false);
   } catch (err) {
     toast.error(err || `Failed to ${targetAdmin ? 'update' : 'create'} admin.`);
   }
 };
+
 const confirmDelete = async () => {
   if (!targetAdmin) return;
 
@@ -265,8 +274,8 @@ const confirmDelete = async () => {
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Gender</label>
                       <select value={formData.gender} onChange={(e) => setFormData({...formData, gender: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                       </select>
                     </div>
                     <div className="space-y-1">

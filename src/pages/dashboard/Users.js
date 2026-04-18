@@ -489,7 +489,7 @@ const UserManagement = () => {
                                 <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={32} /></td></tr>
                             ) : userList.length === 0 ? (
                                 <tr><td colSpan="4" className="py-32 text-center text-sm font-bold text-slate-300">No users found</td></tr>
-                            ) : userList.map(user => {
+                            ) : userList?.map(user => {
                                 const rc = getRoleConfig(user.role);
                                 return (
                                     <tr key={user.id} className="group hover:bg-slate-50/40 transition-all">
@@ -533,7 +533,7 @@ const UserManagement = () => {
                         <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-purple-600" size={32} /></div>
                     ) : userList.length === 0 ? (
                         <div className="py-16 text-center text-sm font-bold text-slate-300">No users found</div>
-                    ) : userList.map(user => {
+                    ) : userList?.map(user => {
                         const rc = getRoleConfig(user.role);
                         return (
                             <div key={user.id} className="p-4 flex items-center gap-3">
@@ -721,7 +721,7 @@ const UserManagement = () => {
                                             {selectedUser.role?.replace(/_/g, ' ')} Details
                                         </p>
                                         <div className="grid grid-cols-2 gap-4">
-                                            {Object.entries(selectedUser.profile).map(([key, val]) => (
+                                            {Object.entries(selectedUser.profile)?.map(([key, val]) => (
                                                 <div key={key}>
                                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[2px] mb-0.5">{key.replace(/_/g, ' ')}</p>
                                                     <p className="text-sm font-bold text-slate-700">

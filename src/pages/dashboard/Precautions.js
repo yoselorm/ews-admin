@@ -9,6 +9,7 @@ import Pagination from '../../components/Pagination';
 import {
     Plus, Search, Trash2, Edit3, Loader2, X, ShieldAlert,
 } from 'lucide-react';
+import toast from '../../components/Toast';
 
 const DEFAULT_FORM = {
     threshold_id: '',
@@ -146,15 +147,46 @@ const Precautions = () => {
 
     const handleDelete = async () => {
         if (!selectedItem) return;
-
         try {
             await dispatch(deletePrecaution(selectedItem.id)).unwrap();
-
+            toast.success("Precaution deleted successfully");
             closeModal();
         } catch (err) {
-            console.error("Failed to delete:", err);
+            toast.error(err || "Failed to delete the precaution. Please try again.");
+            console.error("Delete Error:", err);
         }
     };
+
+    const handleUpdate = async (e) => {
+        if (e) e.preventDefault();
+        if (!selectedItem) return;
+
+        try {
+            await dispatch(updatePrecaution({
+                id: selectedItem.id,
+                data: formData
+            })).unwrap();
+
+            toast.success("Precaution updated successfully!");
+            closeModal();
+        } catch (err) {
+            toast.error(err || "Failed to update precaution.");
+        }
+    };
+
+    const handleCreate = async (e) => {
+        if (e) e.preventDefault();
+
+        try {
+            await dispatch(createPrecaution(formData)).unwrap();
+            toast.success("Precaution created successfully!");
+            closeModal();
+        } catch (err) {
+            toast.error(err || "Failed to create precaution.");
+        }
+    };
+
+
     const openEdit = (item) => {
         setSelectedItem(item);
         setFormData({
@@ -264,14 +296,14 @@ const Precautions = () => {
             {modal === 'add' && (
                 <ModalShell title="New Health Precaution" onClose={closeModal}>
                     <PrecautionFormBody formData={formData} setFormData={setFormData} thresholds={thresholds} error={error} />
-                    <FooterButtons onSubmit={() => dispatch(createPrecaution(formData))} submitLabel="Create Precaution" />
+                    <FooterButtons onSubmit={handleCreate} submitLabel="Create Precaution" />
                 </ModalShell>
             )}
 
             {modal === 'edit' && (
                 <ModalShell title="Edit Precaution" onClose={closeModal}>
                     <PrecautionFormBody formData={formData} setFormData={setFormData} thresholds={thresholds} error={error} />
-                    <FooterButtons onSubmit={() => dispatch(updatePrecaution({ id: selectedItem.id, data: formData }))} submitLabel="Update Precaution" />
+                    <FooterButtons onSubmit={handleUpdate} submitLabel="Update Precaution" />
                 </ModalShell>
             )}
 

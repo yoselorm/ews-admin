@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; 
 import { fetchCategories, createCategory, updateCategory, deleteCategory, resetStatus } from '../../redux/SafetyCategorySlice';
 import { Plus, Edit3, Trash2, X, Loader2, ShieldAlert, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import toast from '../../components/Toast';
 
 const DEFAULT_FORM = { name: '', icon_name: 'thermometer', is_active: true };
 
@@ -56,7 +57,28 @@ const SafetyCategories = () => {
   const handleDelete = async () => {
     try {
       await dispatch(deleteCategory(selectedItem.id)).unwrap();
-    } catch (err) { console.error(err); }
+      toast.success("Category deleted successfully!");
+    } catch (err) {
+      toast.error(err || "Failed to delete category. Please try again.");
+    }
+  };
+
+  const handleCreate = async () => {
+    try {
+      await dispatch(createCategory(formData)).unwrap();
+      toast.success("Category created successfully!");
+    } catch (err) {
+      toast.error(err || "Failed to create category. Please check your inputs.");
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await dispatch(updateCategory({ id: selectedItem.id, data: formData })).unwrap();
+      toast.success("Category updated successfully!");
+    } catch (err) {
+      toast.error(err || "Failed to update category. Please check your inputs.");
+    }
   };
 
   return (
@@ -143,7 +165,7 @@ const SafetyCategories = () => {
           <div className="p-6 pt-0 flex gap-3">
             <button onClick={closeModal} className="flex-1 py-3 border rounded-xl font-bold text-slate-600 hover:bg-slate-50">Cancel</button>
             <button 
-              onClick={() => modal === 'add' ? dispatch(createCategory(formData)) : dispatch(updateCategory({id: selectedItem.id, data: formData}))}
+              onClick={() => modal === 'add' ? handleCreate() : handleUpdate()}
               disabled={actionLoading}
               className="flex-1 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 flex justify-center items-center gap-2"
             >

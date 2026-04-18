@@ -15,108 +15,332 @@ import {
     User, Loader2, X,
     Heart, ShieldCheck, Briefcase, AlertTriangle, UserCheck, Baby, PlusCircle, MinusCircle
 } from 'lucide-react';
+import toast from '../../components/Toast';
 
 // ─── Role-specific payload fields ─────────────────────────────────────────────
 const BASE_FIELDS = ['first_name', 'last_name', 'email', 'phone_number', 'dob', 'gender', 'language_id', 'community_id', 'role'];
 
 const ROLE_FIELDS = {
-    pregnant_woman: [
-        ...BASE_FIELDS,
-        'gestational_age_weeks', 'expected_delivery_date', 'gravida', 'parity',
-        'blood_group', 'health_worker_id', 'anc_facility',
-        'emergency_contact_name', 'emergency_contact_phone', 'medical_conditions',
-    ],
-    lactating_mother: [
-        ...BASE_FIELDS,
-        'baby_first_name', 'baby_last_name', 'baby_dob', 'birth_weight_kg',
-        'baby_gender', 'mode_of_delivery', 'number_of_babies', 'delivery_location',
-        'delivery_date', 'emergency_contact_name', 'emergency_contact_phone',
-        'health_worker_id',
-    ],
-    health_worker: [
-        ...BASE_FIELDS,
-        'staff_id', 'facility_name', 'facility_type', 'district_id',
-        'qualification', 'years_of_experience',
-    ],
-    assembly_official: [
-        ...BASE_FIELDS,
-        'district_id', 'title', 'jurisdiction',
-    ],
+    pregnant_woman: [...BASE_FIELDS, 'gestational_age_weeks', 'expected_delivery_date', 'gravida', 'parity', 'blood_group', 'health_worker_id', 'anc_facility', 'emergency_contact_name', 'emergency_contact_phone', 'medical_conditions'],
+    lactating_mother: [...BASE_FIELDS, 'baby_first_name', 'baby_last_name', 'baby_dob', 'birth_weight_kg', 'baby_gender', 'mode_of_delivery', 'number_of_babies', 'delivery_location', 'delivery_date', 'emergency_contact_name', 'emergency_contact_phone', 'health_worker_id'],
+    health_worker: [...BASE_FIELDS, 'staff_id', 'facility_name', 'facility_type', 'district_id', 'qualification', 'years_of_experience'],
+    assembly_official: [...BASE_FIELDS, 'district_id', 'title', 'jurisdiction'],
 };
 
 const buildPayload = (formData) => {
     const fields = ROLE_FIELDS[formData.role] || BASE_FIELDS;
     return fields.reduce((acc, key) => {
         const val = formData[key];
-        if (val !== '' && val !== null && val !== undefined) {
-            acc[key] = val;
-        }
+        if (val !== '' && val !== null && val !== undefined) acc[key] = val;
         return acc;
     }, {});
 };
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
 const getRoleConfig = (role) => {
     const configs = {
-        pregnant_woman:    { icon: <Heart size={12}/>,       color: 'bg-rose-50 text-rose-600 border-rose-100',          label: 'Pregnant' },
-        lactating_mother:  { icon: <Baby size={12}/>,        color: 'bg-blue-50 text-blue-600 border-blue-100',          label: 'Lactating' },
-        health_worker:     { icon: <ShieldCheck size={12}/>, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Health Worker' },
-        assembly_official: { icon: <Briefcase size={12}/>,   color: 'bg-amber-50 text-amber-600 border-amber-100',       label: 'Official' },
+        pregnant_woman: { icon: <Heart size={12} />, color: 'bg-rose-50 text-rose-600 border-rose-100', label: 'Pregnant' },
+        lactating_mother: { icon: <Baby size={12} />, color: 'bg-blue-50 text-blue-600 border-blue-100', label: 'Lactating' },
+        health_worker: { icon: <ShieldCheck size={12} />, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Health Worker' },
+        assembly_official: { icon: <Briefcase size={12} />, color: 'bg-amber-50 text-amber-600 border-amber-100', label: 'Official' },
     };
     return configs[role] ?? null;
 };
 
-// ─── Reusable form field wrappers (keeps original premium-input styling) ───────
+// ─── Small wrappers — defined OUTSIDE so they're stable component references ──
 const FL = ({ children }) => <label className="text-[10px] font-black text-slate-500 uppercase ml-1 block mb-1">{children}</label>;
 const FW = ({ children, className = '' }) => <div className={`space-y-1.5 ${className}`}>{children}</div>;
 
+// ─── Role field sections — OUTSIDE the page component (fixes focus loss bug) ──
+
+const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, updateCondition }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <FW>
+            <FL>Gestational Age (weeks)</FL>
+            <input type="number" placeholder="e.g. 20" className="premium-input bg-white w-full"
+                value={formData.gestational_age_weeks}
+                onChange={(e) => setFormData(prev => ({ ...prev, gestational_age_weeks: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Expected Delivery Date</FL>
+            <input type="date" className="premium-input bg-white w-full"
+                value={formData.expected_delivery_date}
+                onChange={(e) => setFormData(prev => ({ ...prev, expected_delivery_date: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Gravida</FL>
+            <input type="number" placeholder="No. of pregnancies" className="premium-input bg-white w-full"
+                value={formData.gravida}
+                onChange={(e) => setFormData(prev => ({ ...prev, gravida: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Parity</FL>
+            <input type="number" placeholder="No. of births" className="premium-input bg-white w-full"
+                value={formData.parity}
+                onChange={(e) => setFormData(prev => ({ ...prev, parity: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Blood Group</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.blood_group}
+                onChange={(e) => setFormData(prev => ({ ...prev, blood_group: e.target.value }))}>
+                <option value="">Select...</option>
+                {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(g => <option key={g} value={g}>{g}</option>)}
+            </select>
+        </FW>
+        <FW>
+            <FL>ANC Facility</FL>
+            <input placeholder="e.g. Ridge Hospital" className="premium-input bg-white w-full"
+                value={formData.anc_facility}
+                onChange={(e) => setFormData(prev => ({ ...prev, anc_facility: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Health Worker ID</FL>
+            <input placeholder="Assigned health worker ID" className="premium-input bg-white w-full"
+                value={formData.health_worker_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Emergency Contact Name</FL>
+            <input placeholder="Full name" className="premium-input bg-white w-full"
+                value={formData.emergency_contact_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_name: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Emergency Contact Phone</FL>
+            <input placeholder="Phone number" className="premium-input bg-white w-full"
+                value={formData.emergency_contact_phone}
+                onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_phone: e.target.value }))} />
+        </FW>
+        <FW className="sm:col-span-2">
+            <div className="flex items-center justify-between mb-2">
+                <FL>Medical Conditions</FL>
+                <button type="button" onClick={addCondition} className="flex items-center gap-1 text-[10px] font-black text-purple-600 hover:text-purple-700 uppercase tracking-wider">
+                    <PlusCircle size={14} /> Add
+                </button>
+            </div>
+            {formData.medical_conditions.length === 0 && (
+                <p className="text-[11px] text-slate-300 italic px-1">No conditions added yet.</p>
+            )}
+            <div className="space-y-2">
+                {formData.medical_conditions.map((c, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                        <input
+                            placeholder={`Condition ${i + 1}`}
+                            className="premium-input bg-white flex-1"
+                            value={c}
+                            onChange={(e) => updateCondition(i, e.target.value)}
+                        />
+                        <button type="button" onClick={() => removeCondition(i)} className="text-red-400 hover:text-red-600 shrink-0">
+                            <MinusCircle size={18} />
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </FW>
+    </div>
+);
+
+const LactatingFields = ({ formData, setFormData }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <FW>
+            <FL>Baby's First Name *</FL>
+            <input required placeholder="Baby first name" className="premium-input bg-white w-full"
+                value={formData.baby_first_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, baby_first_name: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Baby's Last Name *</FL>
+            <input required placeholder="Baby last name" className="premium-input bg-white w-full"
+                value={formData.baby_last_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, baby_last_name: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Baby's Date of Birth *</FL>
+            <input required type="date" className="premium-input bg-white w-full"
+                value={formData.baby_dob}
+                onChange={(e) => setFormData(prev => ({ ...prev, baby_dob: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Baby's Gender</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.baby_gender}
+                onChange={(e) => setFormData(prev => ({ ...prev, baby_gender: e.target.value }))}>
+                <option value="">Select...</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </FW>
+        <FW>
+            <FL>Birth Weight (kg)</FL>
+            <input type="number" step="0.1" placeholder="e.g. 3.5" className="premium-input bg-white w-full"
+                value={formData.birth_weight_kg}
+                onChange={(e) => setFormData(prev => ({ ...prev, birth_weight_kg: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Mode of Delivery</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.mode_of_delivery}
+                onChange={(e) => setFormData(prev => ({ ...prev, mode_of_delivery: e.target.value }))}>
+                <option value="">Select...</option>
+                <option value="vaginal">Vaginal</option>
+                <option value="caesarean">Caesarean (CS)</option>
+            </select>
+        </FW>
+        <FW>
+            <FL>Number of Babies</FL>
+            <input type="number" min="1" placeholder="1" className="premium-input bg-white w-full"
+                value={formData.number_of_babies}
+                onChange={(e) => setFormData(prev => ({ ...prev, number_of_babies: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Delivery Location</FL>
+            <input placeholder="e.g. Korle Bu" className="premium-input bg-white w-full"
+                value={formData.delivery_location}
+                onChange={(e) => setFormData(prev => ({ ...prev, delivery_location: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Delivery Date</FL>
+            <input type="date" className="premium-input bg-white w-full"
+                value={formData.delivery_date}
+                onChange={(e) => setFormData(prev => ({ ...prev, delivery_date: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Health Worker ID</FL>
+            <input placeholder="Assigned health worker ID" className="premium-input bg-white w-full"
+                value={formData.health_worker_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Emergency Contact Name</FL>
+            <input placeholder="Full name" className="premium-input bg-white w-full"
+                value={formData.emergency_contact_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_name: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Emergency Contact Phone</FL>
+            <input placeholder="Phone number" className="premium-input bg-white w-full"
+                value={formData.emergency_contact_phone}
+                onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_phone: e.target.value }))} />
+        </FW>
+    </div>
+);
+
+const HealthWorkerFields = ({ formData, setFormData, dlist }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <FW>
+            <FL>Staff ID *</FL>
+            <input required placeholder="e.g. HW-0012" className="premium-input bg-white w-full"
+                value={formData.staff_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, staff_id: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Facility Name</FL>
+            <input placeholder="e.g. Korle Bu Teaching Hospital" className="premium-input bg-white w-full"
+                value={formData.facility_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, facility_name: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Facility Type</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.facility_type}
+                onChange={(e) => setFormData(prev => ({ ...prev, facility_type: e.target.value }))}>
+                <option value="">Select...</option>
+                <option value="Hospital">Hospital</option>
+                <option value="Clinic">Clinic</option>
+                <option value="Health Centre">Health Centre</option>
+                <option value="CHPS">CHPS Compound</option>
+            </select>
+        </FW>
+        <FW>
+            <FL>District</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.district_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, district_id: e.target.value }))}>
+                <option value="">Select District...</option>
+                {dlist?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+        </FW>
+        <FW>
+            <FL>Qualification</FL>
+            <input placeholder="e.g. BSc Nursing" className="premium-input bg-white w-full"
+                value={formData.qualification}
+                onChange={(e) => setFormData(prev => ({ ...prev, qualification: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Years of Experience</FL>
+            <input type="number" min="0" placeholder="0" className="premium-input bg-white w-full"
+                value={formData.years_of_experience}
+                onChange={(e) => setFormData(prev => ({ ...prev, years_of_experience: e.target.value }))} />
+        </FW>
+    </div>
+);
+
+const OfficialFields = ({ formData, setFormData, dlist }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <FW>
+            <FL>Official Title</FL>
+            <input placeholder="e.g. District Officer" className="premium-input bg-white w-full"
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>Jurisdiction</FL>
+            <input placeholder="e.g. Accra Central" className="premium-input bg-white w-full"
+                value={formData.jurisdiction}
+                onChange={(e) => setFormData(prev => ({ ...prev, jurisdiction: e.target.value }))} />
+        </FW>
+        <FW>
+            <FL>District</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.district_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, district_id: e.target.value }))}>
+                <option value="">Select District...</option>
+                {dlist?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+        </FW>
+    </div>
+);
+
+// ─── Main Page Component ───────────────────────────────────────────────────────
 const UserManagement = () => {
     const dispatch = useDispatch();
 
     const { userList, userMeta, usersLoading, userActionLoading, userSuccess } = useSelector(s => s.users);
-    const { list }  = useSelector(s => s.communities);
-    const { languageList }   = useSelector(s => s.languages);   // fetchLanguageList
-    const { dlist }   = useSelector(s => s.districts);   // fetchDistrictsList
+    const { list } = useSelector(s => s.communities);
+    const { languageList } = useSelector(s => s.languages);
+    const { dlist } = useSelector(s => s.districts);
 
-    const [searchTerm,      setSearchTerm]      = useState('');
-    const [roleFilter,      setRoleFilter]      = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState('');
     const [communityFilter, setCommunityFilter] = useState('');
-    const [currentPage,     setCurrentPage]     = useState(1);
-    const [activeModal,     setActiveModal]     = useState(null);
-    const [editMode,        setEditMode]        = useState(false);
-    const [selectedUser,    setSelectedUser]    = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [activeModal, setActiveModal] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const initialForm = {
-        // shared
         first_name: '', last_name: '', email: '', phone_number: '',
         dob: '', gender: 'female', language_id: '', community_id: '',
         role: 'pregnant_woman',
-        // pregnant
         gestational_age_weeks: '', expected_delivery_date: '', gravida: '',
         parity: '', blood_group: '', health_worker_id: '', anc_facility: '',
         emergency_contact_name: '', emergency_contact_phone: '',
-        medical_conditions: [],          // array of strings
-        // lactating
+        medical_conditions: [],
         baby_first_name: '', baby_last_name: '', baby_dob: '',
         birth_weight_kg: '', baby_gender: '', mode_of_delivery: '',
         number_of_babies: '', delivery_location: '', delivery_date: '',
-        // health worker
         staff_id: '', facility_name: '', facility_type: '', district_id: '',
         qualification: '', years_of_experience: '',
-        // official
         title: '', jurisdiction: '',
     };
 
     const [formData, setFormData] = useState(initialForm);
-    const set = (key) => (e) => setFormData(prev => ({ ...prev, [key]: e.target.value }));
 
-    // medical_conditions array helpers
+    // medical_conditions helpers
     const addCondition = () => setFormData(prev => ({ ...prev, medical_conditions: [...prev.medical_conditions, ''] }));
     const removeCondition = (i) => setFormData(prev => ({ ...prev, medical_conditions: prev.medical_conditions.filter((_, idx) => idx !== i) }));
     const updateCondition = (i, val) => setFormData(prev => {
-        const arr = [...prev.medical_conditions];
-        arr[i] = val;
-        return { ...prev, medical_conditions: arr };
+        const arr = [...prev.medical_conditions]; arr[i] = val; return { ...prev, medical_conditions: arr };
     });
 
     useEffect(() => {
@@ -157,169 +381,59 @@ const UserManagement = () => {
         dispatch(fetchUsers({ page: p, limit: 15, search: searchTerm, role: roleFilter, community_id: communityFilter }));
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
         const payload = buildPayload(formData);
-        // strip empty medical_conditions entries
+
         if (payload.medical_conditions) {
             payload.medical_conditions = payload.medical_conditions.filter(c => c.trim() !== '');
             if (payload.medical_conditions.length === 0) delete payload.medical_conditions;
         }
+
         const actionMap = {
-            pregnant_woman:    editMode ? updatePregnantWoman    : createPregnantWoman,
-            lactating_mother:  editMode ? updateLactatingMother  : createLactatingMother,
-            health_worker:     editMode ? updateHealthWorker     : createHealthWorker,
+            pregnant_woman: editMode ? updatePregnantWoman : createPregnantWoman,
+            lactating_mother: editMode ? updateLactatingMother : createLactatingMother,
+            health_worker: editMode ? updateHealthWorker : createHealthWorker,
             assembly_official: editMode ? updateAssemblyOfficial : createAssemblyOfficial,
         };
+
         const action = actionMap[formData.role];
         if (!action) return;
-        dispatch(action(editMode ? { id: selectedUser.id, data: payload } : payload));
-    };
 
-    // ── Shared dropdowns ─────────────────────────────────────────────────────
-    const LanguageSelect = ({ value, onChange }) => (
-        <select className="premium-input w-full cursor-pointer" value={value} onChange={onChange}>
-            <option value="">Select Language...</option>
-            {languageList?.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
-        </select>
-    );
+        try {
+            await dispatch(action(editMode ? { id: selectedUser.id, data: payload } : payload)).unwrap();
 
-    const DistrictSelect = ({ value, onChange }) => (
-        <select className="premium-input w-full cursor-pointer" value={value} onChange={onChange}>
-            <option value="">Select District...</option>
-            {dlist?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-        </select>
-    );
+            toast.success(`User profile ${editMode ? 'updated' : 'created'} successfully`);
 
-    // ── Role-specific form sections ──────────────────────────────────────────
-    const PregnantFields = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            <FW><FL>Gestational Age (weeks)</FL><input type="number" placeholder="e.g. 20" className="premium-input bg-white w-full" value={formData.gestational_age_weeks} onChange={set('gestational_age_weeks')} /></FW>
-            <FW><FL>Expected Delivery Date</FL><input type="date" className="premium-input bg-white w-full" value={formData.expected_delivery_date} onChange={set('expected_delivery_date')} /></FW>
-            <FW><FL>Gravida</FL><input type="number" placeholder="No. of pregnancies" className="premium-input bg-white w-full" value={formData.gravida} onChange={set('gravida')} /></FW>
-            <FW><FL>Parity</FL><input type="number" placeholder="No. of births" className="premium-input bg-white w-full" value={formData.parity} onChange={set('parity')} /></FW>
-            <FW>
-                <FL>Blood Group</FL>
-                <select className="premium-input bg-white w-full cursor-pointer" value={formData.blood_group} onChange={set('blood_group')}>
-                    <option value="">Select...</option>
-                    {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
-                </select>
-            </FW>
-            <FW><FL>ANC Facility</FL><input placeholder="e.g. Ridge Hospital" className="premium-input bg-white w-full" value={formData.anc_facility} onChange={set('anc_facility')} /></FW>
-            <FW><FL>Health Worker ID</FL><input placeholder="Assigned health worker ID" className="premium-input bg-white w-full" value={formData.health_worker_id} onChange={set('health_worker_id')} /></FW>
-            <FW><FL>Emergency Contact Name</FL><input placeholder="Full name" className="premium-input bg-white w-full" value={formData.emergency_contact_name} onChange={set('emergency_contact_name')} /></FW>
-            <FW><FL>Emergency Contact Phone</FL><input placeholder="Phone number" className="premium-input bg-white w-full" value={formData.emergency_contact_phone} onChange={set('emergency_contact_phone')} /></FW>
 
-            {/* Medical conditions — dynamic list */}
-            <FW className="sm:col-span-2">
-                <div className="flex items-center justify-between mb-2">
-                    <FL>Medical Conditions</FL>
-                    <button type="button" onClick={addCondition} className="flex items-center gap-1 text-[10px] font-black text-purple-600 hover:text-purple-700 uppercase tracking-wider">
-                        <PlusCircle size={14}/> Add
-                    </button>
-                </div>
-                {formData.medical_conditions.length === 0 && (
-                    <p className="text-[11px] text-slate-300 italic px-1">No conditions added yet.</p>
-                )}
-                <div className="space-y-2">
-                    {formData.medical_conditions.map((c, i) => (
-                        <div key={i} className="flex gap-2 items-center">
-                            <input
-                                placeholder={`Condition ${i + 1}`}
-                                className="premium-input bg-white flex-1"
-                                value={c}
-                                onChange={(e) => updateCondition(i, e.target.value)}
-                            />
-                            <button type="button" onClick={() => removeCondition(i)} className="text-red-400 hover:text-red-600 shrink-0">
-                                <MinusCircle size={18}/>
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            </FW>
-        </div>
-    );
-
-    const LactatingFields = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            <FW><FL>Baby's First Name *</FL><input required placeholder="Baby first name" className="premium-input bg-white w-full" value={formData.baby_first_name} onChange={set('baby_first_name')} /></FW>
-            <FW><FL>Baby's Last Name *</FL><input required placeholder="Baby last name" className="premium-input bg-white w-full" value={formData.baby_last_name} onChange={set('baby_last_name')} /></FW>
-            <FW><FL>Baby's Date of Birth *</FL><input required type="date" className="premium-input bg-white w-full" value={formData.baby_dob} onChange={set('baby_dob')} /></FW>
-            <FW>
-                <FL>Baby's Gender</FL>
-                <select className="premium-input bg-white w-full cursor-pointer" value={formData.baby_gender} onChange={set('baby_gender')}>
-                    <option value="">Select...</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-            </FW>
-            <FW><FL>Birth Weight (kg)</FL><input type="number" step="0.1" placeholder="e.g. 3.5" className="premium-input bg-white w-full" value={formData.birth_weight_kg} onChange={set('birth_weight_kg')} /></FW>
-            <FW>
-                <FL>Mode of Delivery</FL>
-                <select className="premium-input bg-white w-full cursor-pointer" value={formData.mode_of_delivery} onChange={set('mode_of_delivery')}>
-                    <option value="">Select...</option>
-                    <option value="vaginal">Vaginal</option>
-                    <option value="caesarean">Caesarean (CS)</option>
-                </select>
-            </FW>
-            <FW><FL>Number of Babies</FL><input type="number" min="1" placeholder="1" className="premium-input bg-white w-full" value={formData.number_of_babies} onChange={set('number_of_babies')} /></FW>
-            <FW><FL>Delivery Location</FL><input placeholder="e.g. Korle Bu" className="premium-input bg-white w-full" value={formData.delivery_location} onChange={set('delivery_location')} /></FW>
-            <FW><FL>Delivery Date</FL><input type="date" className="premium-input bg-white w-full" value={formData.delivery_date} onChange={set('delivery_date')} /></FW>
-            <FW><FL>Health Worker ID</FL><input placeholder="Assigned health worker ID" className="premium-input bg-white w-full" value={formData.health_worker_id} onChange={set('health_worker_id')} /></FW>
-            <FW><FL>Emergency Contact Name</FL><input placeholder="Full name" className="premium-input bg-white w-full" value={formData.emergency_contact_name} onChange={set('emergency_contact_name')} /></FW>
-            <FW><FL>Emergency Contact Phone</FL><input placeholder="Phone number" className="premium-input bg-white w-full" value={formData.emergency_contact_phone} onChange={set('emergency_contact_phone')} /></FW>
-        </div>
-    );
-
-    const HealthWorkerFields = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            <FW><FL>Staff ID *</FL><input required placeholder="e.g. HW-0012" className="premium-input bg-white w-full" value={formData.staff_id} onChange={set('staff_id')} /></FW>
-            <FW><FL>Facility Name</FL><input placeholder="e.g. Korle Bu Teaching Hospital" className="premium-input bg-white w-full" value={formData.facility_name} onChange={set('facility_name')} /></FW>
-            <FW>
-                <FL>Facility Type</FL>
-                <select className="premium-input bg-white w-full cursor-pointer" value={formData.facility_type} onChange={set('facility_type')}>
-                    <option value="">Select...</option>
-                    <option value="Hospital">Hospital</option>
-                    <option value="Clinic">Clinic</option>
-                    <option value="Health Centre">Health Centre</option>
-                    <option value="CHPS">CHPS Compound</option>
-                </select>
-            </FW>
-            <FW><FL>District</FL><DistrictSelect value={formData.district_id} onChange={set('district_id')} /></FW>
-            <FW><FL>Qualification</FL><input placeholder="e.g. BSc Nursing" className="premium-input bg-white w-full" value={formData.qualification} onChange={set('qualification')} /></FW>
-            <FW><FL>Years of Experience</FL><input type="number" min="0" placeholder="0" className="premium-input bg-white w-full" value={formData.years_of_experience} onChange={set('years_of_experience')} /></FW>
-        </div>
-    );
-
-    const OfficialFields = () => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-            <FW><FL>Official Title</FL><input placeholder="e.g. District Officer" className="premium-input bg-white w-full" value={formData.title} onChange={set('title')} /></FW>
-            <FW><FL>Jurisdiction</FL><input placeholder="e.g. Accra Central" className="premium-input bg-white w-full" value={formData.jurisdiction} onChange={set('jurisdiction')} /></FW>
-            <FW><FL>District</FL><DistrictSelect value={formData.district_id} onChange={set('district_id')} /></FW>
-        </div>
-    );
-
-    const RoleFields = () => {
-        switch (formData.role) {
-            case 'pregnant_woman':    return <PregnantFields />;
-            case 'lactating_mother':  return <LactatingFields />;
-            case 'health_worker':     return <HealthWorkerFields />;
-            case 'assembly_official': return <OfficialFields />;
-            default: return null;
+        } catch (err) {
+            toast.error(err || "Failed to save user profile");
         }
     };
 
-    // ────────────────────────────────────────────────────────────────────────
+
+    const handleDelete = async () => {
+        if (!selectedUser?.id) return;
+
+        try {
+            await dispatch(deleteUser(selectedUser.id)).unwrap();
+
+            toast.success("User deleted successfully");
+
+        } catch (err) {
+            toast.error(err || "Failed to delete user");
+        }
+    };
     return (
-        <div className="bg-[#FBFBFB] min-h-screen">
+        <div className="p-4 sm:p-6 lg:p-10 bg-[#FBFBFB] min-h-screen">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10">
                 <div className="flex items-center gap-4">
                     <div className="bg-slate-900 p-3 sm:p-4 rounded-3xl text-white shadow-xl shadow-slate-200 shrink-0">
-                        <UserCheck size={26}/>
+                        <UserCheck size={26} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">User Management</h1>
+                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">User Management</h1>
                         <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[3px]">System Directory & Enrollment</p>
                     </div>
                 </div>
@@ -327,14 +441,14 @@ const UserManagement = () => {
                     onClick={() => { setEditMode(false); setFormData(initialForm); setActiveModal('form'); }}
                     className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-purple-700 transition-all shadow-lg shadow-purple-100 w-full sm:w-auto"
                 >
-                    <Plus size={20} strokeWidth={3}/> New Registration
+                    <Plus size={20} strokeWidth={3} /> New Registration
                 </button>
             </div>
 
             {/* Filter Bar */}
             <div className="bg-white p-3 sm:p-4 rounded-[32px] border border-slate-100 shadow-sm mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="flex-1 relative">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20}/>
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                     <input
                         type="text" placeholder="Search by name, phone or email..."
                         className="w-full bg-slate-50 border-none rounded-2xl py-3 sm:py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500/10 transition-all"
@@ -360,7 +474,6 @@ const UserManagement = () => {
 
             {/* Table */}
             <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-                {/* Desktop */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-slate-50 border-b border-slate-100">
@@ -373,7 +486,7 @@ const UserManagement = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {usersLoading ? (
-                                <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={32}/></td></tr>
+                                <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={32} /></td></tr>
                             ) : userList.length === 0 ? (
                                 <tr><td colSpan="4" className="py-32 text-center text-sm font-bold text-slate-300">No users found</td></tr>
                             ) : userList.map(user => {
@@ -402,9 +515,9 @@ const UserManagement = () => {
                                         </td>
                                         <td className="px-6 lg:px-10 py-6 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-purple-600 transition-all shadow-sm"><Eye size={18}/></button>
-                                                <button onClick={() => openEdit(user)} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-blue-600 transition-all shadow-sm"><Edit3 size={18}/></button>
-                                                <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-red-500 transition-all shadow-sm"><Trash2 size={18}/></button>
+                                                <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-purple-600 transition-all shadow-sm"><Eye size={18} /></button>
+                                                <button onClick={() => openEdit(user)} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-blue-600 transition-all shadow-sm"><Edit3 size={18} /></button>
+                                                <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-red-500 transition-all shadow-sm"><Trash2 size={18} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -417,7 +530,7 @@ const UserManagement = () => {
                 {/* Mobile cards */}
                 <div className="md:hidden divide-y divide-slate-50">
                     {usersLoading ? (
-                        <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-purple-600" size={32}/></div>
+                        <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-purple-600" size={32} /></div>
                     ) : userList.length === 0 ? (
                         <div className="py-16 text-center text-sm font-bold text-slate-300">No users found</div>
                     ) : userList.map(user => {
@@ -439,9 +552,9 @@ const UserManagement = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-1 shrink-0">
-                                    <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2 rounded-xl text-slate-300 hover:text-purple-600 hover:bg-purple-50 transition-all"><Eye size={17}/></button>
-                                    <button onClick={() => openEdit(user)} className="p-2 rounded-xl text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-all"><Edit3 size={17}/></button>
-                                    <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"><Trash2 size={17}/></button>
+                                    <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2 rounded-xl text-slate-300 hover:text-purple-600 hover:bg-purple-50 transition-all"><Eye size={17} /></button>
+                                    <button onClick={() => openEdit(user)} className="p-2 rounded-xl text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-all"><Edit3 size={17} /></button>
+                                    <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"><Trash2 size={17} /></button>
                                 </div>
                             </div>
                         );
@@ -456,7 +569,7 @@ const UserManagement = () => {
                 />
             </div>
 
-            {/* ── MODALS ── */}
+            {/* MODALS */}
             <AnimatePresence>
 
                 {/* FORM MODAL */}
@@ -473,7 +586,7 @@ const UserManagement = () => {
                                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{editMode ? 'Update Member Profile' : 'Enroll New Member'}</h2>
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Fields marked * are required.</p>
                                 </div>
-                                <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-50 rounded-full transition-all text-slate-300"><X size={28}/></button>
+                                <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-50 rounded-full transition-all text-slate-300"><X size={28} /></button>
                             </div>
 
                             <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 sm:p-10 space-y-8 sm:space-y-10 custom-scrollbar">
@@ -491,18 +604,18 @@ const UserManagement = () => {
                                     ))}
                                 </div>
 
-                                {/* Core identity — same for all roles */}
+                                {/* Core Identity */}
                                 <div className="space-y-6">
-                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[3px] flex items-center gap-2"><User size={14}/> Core Identity</h4>
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[3px] flex items-center gap-2"><User size={14} /> Core Identity</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                                        <FW><FL>First Name *</FL><input required placeholder="First name" className="premium-input w-full" value={formData.first_name} onChange={set('first_name')} /></FW>
-                                        <FW><FL>Last Name *</FL><input required placeholder="Last name" className="premium-input w-full" value={formData.last_name} onChange={set('last_name')} /></FW>
-                                        <FW><FL>Phone Number *</FL><input required placeholder="0241234567" className="premium-input w-full" value={formData.phone_number} onChange={set('phone_number')} /></FW>
-                                        <FW><FL>Date of Birth *</FL><input required type="date" className="premium-input w-full" value={formData.dob} onChange={set('dob')} /></FW>
-                                        <FW><FL>Email Address</FL><input type="email" placeholder="user@example.com" className="premium-input w-full" value={formData.email} onChange={set('email')} /></FW>
+                                        <FW><FL>First Name *</FL><input required placeholder="First name" className="premium-input w-full" value={formData.first_name} onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))} /></FW>
+                                        <FW><FL>Last Name *</FL><input required placeholder="Last name" className="premium-input w-full" value={formData.last_name} onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))} /></FW>
+                                        <FW><FL>Phone Number *</FL><input required placeholder="0241234567" className="premium-input w-full" value={formData.phone_number} onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))} /></FW>
+                                        <FW><FL>Date of Birth *</FL><input required type="date" className="premium-input w-full" value={formData.dob} onChange={(e) => setFormData(prev => ({ ...prev, dob: e.target.value }))} /></FW>
+                                        <FW><FL>Email Address</FL><input type="email" placeholder="user@example.com" className="premium-input w-full" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} /></FW>
                                         <FW>
                                             <FL>Gender</FL>
-                                            <select className="premium-input w-full cursor-pointer" value={formData.gender} onChange={set('gender')}>
+                                            <select className="premium-input w-full cursor-pointer" value={formData.gender} onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}>
                                                 <option value="female">Female</option>
                                                 <option value="male">Male</option>
                                                 <option value="other">Other</option>
@@ -510,11 +623,14 @@ const UserManagement = () => {
                                         </FW>
                                         <FW>
                                             <FL>Language</FL>
-                                            <LanguageSelect value={formData.language_id} onChange={set('language_id')} />
+                                            <select className="premium-input w-full cursor-pointer" value={formData.language_id} onChange={(e) => setFormData(prev => ({ ...prev, language_id: e.target.value }))}>
+                                                <option value="">Select Language...</option>
+                                                {languageList?.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                                            </select>
                                         </FW>
                                         <FW>
                                             <FL>Assigned Community *</FL>
-                                            <select required className="premium-input w-full cursor-pointer" value={formData.community_id} onChange={set('community_id')}>
+                                            <select required className="premium-input w-full cursor-pointer" value={formData.community_id} onChange={(e) => setFormData(prev => ({ ...prev, community_id: e.target.value }))}>
                                                 <option value="">Select Community...</option>
                                                 {list?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                             </select>
@@ -522,18 +638,35 @@ const UserManagement = () => {
                                     </div>
                                 </div>
 
-                                {/* Role-specific section */}
+                                {/* Role-specific fields — stable component references, no re-mounting */}
                                 <div className="p-6 sm:p-10 bg-slate-50 rounded-[32px] sm:rounded-[40px] border border-slate-100 space-y-8">
                                     <h4 className="text-[10px] font-black text-purple-600 uppercase tracking-[3px] border-b border-slate-200 pb-4 flex items-center gap-2">
-                                        <Filter size={14}/> {formData.role?.replace(/_/g, ' ')} Profile Details
+                                        <Filter size={14} /> {formData.role?.replace(/_/g, ' ')} Profile Details
                                     </h4>
-                                    <RoleFields />
+                                    {formData.role === 'pregnant_woman' && (
+                                        <PregnantFields
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            addCondition={addCondition}
+                                            removeCondition={removeCondition}
+                                            updateCondition={updateCondition}
+                                        />
+                                    )}
+                                    {formData.role === 'lactating_mother' && (
+                                        <LactatingFields formData={formData} setFormData={setFormData} />
+                                    )}
+                                    {formData.role === 'health_worker' && (
+                                        <HealthWorkerFields formData={formData} setFormData={setFormData} dlist={dlist} />
+                                    )}
+                                    {formData.role === 'assembly_official' && (
+                                        <OfficialFields formData={formData} setFormData={setFormData} dlist={dlist} />
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                                     <button type="button" onClick={() => setActiveModal(null)} className="order-2 sm:order-1 flex-1 py-4 sm:py-5 rounded-2xl font-black text-slate-400 hover:bg-slate-50 transition-all uppercase tracking-widest text-[11px]">Cancel</button>
                                     <button type="submit" disabled={userActionLoading} className="order-1 sm:order-2 flex-1 py-4 sm:py-5 bg-slate-900 text-white rounded-2xl font-black shadow-xl hover:bg-black transition-all flex justify-center items-center gap-2 uppercase tracking-widest text-[11px]">
-                                        {userActionLoading ? <Loader2 className="animate-spin" size={20}/> : (editMode ? 'Update Database' : 'Enroll Member')}
+                                        {userActionLoading ? <Loader2 className="animate-spin" size={20} /> : (editMode ? 'Update Database' : 'Enroll Member')}
                                     </button>
                                 </div>
                             </form>
@@ -565,15 +698,15 @@ const UserManagement = () => {
                                         })()}
                                     </div>
                                 </div>
-                                <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-50 rounded-full transition-all text-slate-300 shrink-0"><X size={24}/></button>
+                                <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-50 rounded-full transition-all text-slate-300 shrink-0"><X size={24} /></button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 custom-scrollbar">
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
-                                        { label: 'Phone',     value: selectedUser.phone_number },
-                                        { label: 'Email',     value: selectedUser.email },
-                                        { label: 'DOB',       value: selectedUser.dob },
-                                        { label: 'Gender',    value: selectedUser.gender },
+                                        { label: 'Phone', value: selectedUser.phone_number },
+                                        { label: 'Email', value: selectedUser.email },
+                                        { label: 'DOB', value: selectedUser.dob },
+                                        { label: 'Gender', value: selectedUser.gender },
                                         { label: 'Community', value: selectedUser.community?.name },
                                     ].map(({ label, value }) => (
                                         <div key={label}>
@@ -605,7 +738,7 @@ const UserManagement = () => {
                             </div>
                             <div className="p-6 sm:p-8 border-t border-slate-50 flex gap-3 shrink-0">
                                 <button onClick={() => openEdit(selectedUser)} className="flex-1 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-2">
-                                    <Edit3 size={15}/> Edit Profile
+                                    <Edit3 size={15} /> Edit Profile
                                 </button>
                                 <button onClick={() => setActiveModal(null)} className="px-6 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-400 hover:bg-slate-50 transition-all border border-slate-100">Close</button>
                             </div>
@@ -623,7 +756,7 @@ const UserManagement = () => {
                             className="bg-white w-full sm:max-w-md rounded-t-[40px] sm:rounded-[40px] p-10 sm:p-12 text-center shadow-2xl"
                         >
                             <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-100">
-                                <AlertTriangle size={40}/>
+                                <AlertTriangle size={40} />
                             </div>
                             <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">Revoke Access?</h2>
                             <p className="text-slate-500 font-bold text-xs mb-10 px-4 leading-relaxed uppercase tracking-tighter">
@@ -631,11 +764,11 @@ const UserManagement = () => {
                             </p>
                             <div className="flex flex-col gap-3">
                                 <button
-                                    onClick={() => dispatch(deleteUser(selectedUser.id))}
+                                    onClick={handleDelete}
                                     disabled={userActionLoading}
                                     className="w-full bg-red-500 hover:bg-red-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-2 disabled:opacity-60 transition-all"
                                 >
-                                    {userActionLoading ? <><Loader2 className="animate-spin" size={18}/> Deleting...</> : 'Confirm Delete'}
+                                    {userActionLoading ? <><Loader2 className="animate-spin" size={18} /> Deleting...</> : 'Confirm Delete'}
                                 </button>
                                 <button onClick={() => setActiveModal(null)} disabled={userActionLoading} className="w-full bg-slate-50 text-slate-400 py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] disabled:opacity-50">Cancel</button>
                             </div>

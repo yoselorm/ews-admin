@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAdmin } from '../../redux/AuthSlice';
+import toast from '../Toast';
 
 const DashboardShell = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -18,15 +19,21 @@ const DashboardShell = () => {
     const navigate = useNavigate();
     const { admin, loading } = useSelector((state) => state.auth);
 
-    const handleLogout = async () => {
-        try {
-            await dispatch(logoutAdmin()).unwrap();
-            navigate('/');
-        } catch (error) {
-            console.error("Logout failed:", error);
-            navigate('/');
-        }
-    };
+const handleLogout = async () => {
+    try {
+        await dispatch(logoutAdmin()).unwrap();
+                toast.success("Logged out successfully");
+        
+        navigate('/');
+    } catch (error) {
+        // Even if the server-side session clearing fails, 
+        // we usually want to boot the user to the login screen
+        console.error("Logout failed:", error);
+        
+        toast.error("Logout issue detected, but redirecting to login...");
+        navigate('/');
+    }
+};
 
     const menuItems = [
         { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },

@@ -26,17 +26,23 @@ export const createHealthWorker = createUserThunk('HealthWorker', '/v1/admin/use
 export const createAssemblyOfficial = createUserThunk('Assembly', '/v1/admin/users/assembly-officials');
 
 // 3. Update Thunks (Four distinct endpoints)
-const updateUserThunk = (name, url) => createAsyncThunk(`users/update${name}`, async ({ id, data }, { rejectWithValue }) => {
-    try {
-        const response = await api.put(`${url}/${id}`, data);
-        return response.data;
-    } catch (err) { return rejectWithValue(err.response?.data?.message || `Failed to update ${name}`); }
-});
+const updateUserThunk = (name, urlPath) => createAsyncThunk(
+    `users/update${name}`, 
+    async ({ id, data }, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/v1/admin/users/${id}/${urlPath}`, data);
+            return response.data;
+        } catch (err) { 
+            return rejectWithValue(err.response?.data?.message || `Failed to update ${name}`); 
+        }
+    }
+);
 
-export const updatePregnantWoman = updateUserThunk('Pregnant', '/v1/admin/users/pregnant-woman'); // Note: single 'woman' in URL
-export const updateLactatingMother = updateUserThunk('Lactating', '/v1/admin/users/lactating-mother');
-export const updateHealthWorker = updateUserThunk('HealthWorker', '/v1/admin/users/health-worker');
-export const updateAssemblyOfficial = updateUserThunk('Assembly', '/v1/admin/users/assembly-official');
+// We now only pass the final segment of the URL
+export const updatePregnantWoman = updateUserThunk('Pregnant', 'pregnant-woman'); 
+export const updateLactatingMother = updateUserThunk('Lactating', 'lactating-mother');
+export const updateHealthWorker = updateUserThunk('HealthWorker', 'health-worker');
+export const updateAssemblyOfficial = updateUserThunk('Assembly', 'assembly-official');
 
 // 4. Delete
 export const deleteUser = createAsyncThunk('users/delete', async (id, { rejectWithValue }) => {

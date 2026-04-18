@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import Pagination from '../../components/Pagination'; 
+import toast from '../../components/Toast';
 
 const AdminManagement = () => {
   const dispatch = useDispatch();
@@ -53,21 +54,36 @@ const AdminManagement = () => {
     }));
   };
 
-  const handleUpsert = async (e) => {
-    e.preventDefault();
-    const action = targetAdmin 
-      ? updateAdmin({ id: targetAdmin.id, adminData: formData }) 
-      : createAdmin(formData);
-    
-    const result = await dispatch(action);
-    if (!result.error) setIsUpsertModalOpen(false);
-  };
+const handleUpsert = async (e) => {
+  e.preventDefault();
+  
+  const action = targetAdmin 
+    ? updateAdmin({ id: targetAdmin.id, adminData: formData }) 
+    : createAdmin(formData);
+  
+  try {
+    await dispatch(action).unwrap();
 
-  const confirmDelete = async () => {
-    if (!targetAdmin) return;
-    const result = await dispatch(deleteAdmin(targetAdmin.id));
-    if (!result.error) setIsDeleteModalOpen(false);
-  };
+    toast.success(`Admin ${targetAdmin ? 'updated' : 'created'} successfully!`);
+    
+    setIsUpsertModalOpen(false);
+  } catch (err) {
+    toast.error(err || `Failed to ${targetAdmin ? 'update' : 'create'} admin.`);
+  }
+};
+const confirmDelete = async () => {
+  if (!targetAdmin) return;
+
+  try {
+    await dispatch(deleteAdmin(targetAdmin.id)).unwrap();
+
+    toast.success("Admin deleted successfully");
+    
+    setIsDeleteModalOpen(false);
+  } catch (err) {
+    toast.error(err || "Failed to delete admin");
+  }
+};
 
   const openUpsert = (admin = null) => {
     setTargetAdmin(admin);

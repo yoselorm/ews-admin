@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import Pagination from '../../components/Pagination';
+import toast from '../../components/Toast';
 
 const AudioTranslationManagement = () => {
     const dispatch = useDispatch();
@@ -78,31 +79,53 @@ const AudioTranslationManagement = () => {
     }, [filters, dispatch]);
 
     // --- Handlers ---
-    const handleUpload = async (e) => {
-        e.preventDefault();
-        const data = new FormData();
-        data.append('translatable_type', formData.translatable_type);
-        data.append('translatable_id', formData.translatable_id);
-        data.append('language_id', formData.language_id);
+   const handleUpload = async (e) => {
+    e.preventDefault();
+    
+    // 1. Validation check with Toast
+    if (!formData.audio_file) {
+        toast.warning('Please provide an audio file either by uploading or recording.');
+        return;
+    }
 
-        if (formData.audio_file) {
-            data.append('audio_file', formData.audio_file);
-        } else {
-            alert('Please provide an audio file either by uploading or recording.');
-            return;
-        }
-        const result = await dispatch(uploadAudioTranslation(data));
-        if (!result.error) {
-            setIsUploadModalOpen(false);
-            setFormData({ translatable_type: 'alert', translatable_id: '', language_id: '', audio_file: null });
-        }
-    };
+    const data = new FormData();
+    data.append('translatable_type', formData.translatable_type);
+    data.append('translatable_id', formData.translatable_id);
+    data.append('language_id', formData.language_id);
+    data.append('audio_file', formData.audio_file);
 
-    const confirmDelete = async () => {
-        if (!targetAudio) return;
-        const result = await dispatch(deleteAudioTranslation(targetAudio.id));
-        if (!result.error) setIsDeleteModalOpen(false);
-    };
+    try {
+        await dispatch(uploadAudioTranslation(data)).unwrap();
+
+        toast.success("Audio translation uploaded successfully!");
+
+        // 3. Cleanup & Close
+        setIsUploadModalOpen(false);
+        setFormData({ 
+            translatable_type: 'alert', 
+            translatable_id: '', 
+            language_id: '', 
+            audio_file: null 
+        });
+        
+    } catch (err) {
+        toast.error(err || "Failed to upload audio translation.");
+    }
+};
+
+  const confirmDelete = async () => {
+    if (!targetAudio) return;
+
+    try {
+        await dispatch(deleteAudioTranslation(targetAudio.id)).unwrap();
+
+        toast.success("Audio translation deleted successfully");
+        
+        setIsDeleteModalOpen(false);
+    } catch (err) {
+        toast.error(err || "Failed to delete the audio translation");
+    }
+};
 
     const togglePlayback = (id, url) => {
         const player = document.getElementById('global-audio-player');

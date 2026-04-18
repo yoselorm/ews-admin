@@ -15,6 +15,7 @@ import {
   Plus, MapPin, Building2, Home, ChevronRight,
   Edit3, Trash2, Loader2, X, ShieldAlert, Globe, ArrowLeft
 } from 'lucide-react';
+import toast from '../../components/Toast';
 
 const CountBadge = ({ count }) => (
   <span className="ml-auto text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full tabular-nums">
@@ -273,19 +274,53 @@ const GeographyPage = () => {
     dispatch(resetCommunityStatus());
   };
 
-  const handleSubmit = () => {
-    const { type, mode, item } = modalState;
-    if (type === 'region') mode === 'add' ? dispatch(createRegion(formData)) : dispatch(updateRegion({ id: item.id, data: formData }));
-    if (type === 'district') mode === 'add' ? dispatch(createDistrict(formData)) : dispatch(updateDistrict({ id: item.id, data: formData }));
-    if (type === 'community') mode === 'add' ? dispatch(createCommunity(formData)) : dispatch(updateCommunity({ id: item.id, data: formData }));
-  };
+ const handleSubmit = async (e) => {
+  if (e) e.preventDefault();
+  const { type, mode, item } = modalState;
 
-  const handleDelete = () => {
-    const { type, item } = modalState;
-    if (type === 'region') dispatch(deleteRegion(item.id));
-    if (type === 'district') dispatch(deleteDistrict(item.id));
-    if (type === 'community') dispatch(deleteCommunity(item.id));
-  };
+  try {
+    let resultAction;
+
+    if (type === 'region') {
+      resultAction = mode === 'add' 
+        ? dispatch(createRegion(formData)) 
+        : dispatch(updateRegion({ id: item.id, data: formData }));
+    } 
+    else if (type === 'district') {
+      resultAction = mode === 'add' 
+        ? dispatch(createDistrict(formData)) 
+        : dispatch(updateDistrict({ id: item.id, data: formData }));
+    } 
+    else if (type === 'community') {
+      resultAction = mode === 'add' 
+        ? dispatch(createCommunity(formData)) 
+        : dispatch(updateCommunity({ id: item.id, data: formData }));
+    }
+    await resultAction.unwrap();
+    const actionLabel = mode === 'add' ? 'created' : 'updated';
+    toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} ${actionLabel} successfully!`);
+    closeModal(); 
+  } catch (err) {
+    toast.error(err || `Failed to ${mode} ${type}.`);
+  }
+};
+const handleDelete = async () => {
+  const { type, item } = modalState;
+  if (!item?.id) return;
+
+  try {
+    let resultAction;
+
+    if (type === 'region') resultAction = dispatch(deleteRegion(item.id));
+    if (type === 'district') resultAction = dispatch(deleteDistrict(item.id));
+    if (type === 'community') resultAction = dispatch(deleteCommunity(item.id));
+
+    await resultAction.unwrap();
+    toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully`);
+  } catch (err) {
+    toast.error(err || `Could not delete this ${type}.`);
+  }
+};
 
   const actionLoading = regionActionLoading || districtActionLoading || communityActionLoading;
   const formError = regionError || districtError || communityError;
@@ -293,7 +328,6 @@ const GeographyPage = () => {
   // Modal labels
   const typeLabel = { region: 'Region', district: 'District', community: 'Community' };
 
-  // ── Mobile breadcrumb nav ───────────────────────────────────────────────────
   const MobileBreadcrumb = () => (
     <div className="flex items-center gap-2 text-xs font-bold text-slate-500 lg:hidden bg-white rounded-xl px-4 py-2.5 border border-slate-100 shadow-sm">
       <button onClick={() => setMobileView('regions')} className={mobileView === 'regions' ? 'text-purple-600' : 'hover:text-slate-800'}>Regions</button>
@@ -319,7 +353,6 @@ const GeographyPage = () => {
 
   return (
     <div className="space-y-4">
-      {/* Page header */}
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Geography Control</h1>
@@ -327,7 +360,6 @@ const GeographyPage = () => {
         </div>
       </div>
 
-      {/* Mobile breadcrumb */}
       <MobileBreadcrumb />
 
       {/* Mobile back buttons */}

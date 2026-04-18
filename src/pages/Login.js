@@ -3,6 +3,7 @@ import { Mail, Lock, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearStatus, loginAdmin } from '../redux/AuthSlice';
+import toast from '../components/Toast';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -20,14 +21,23 @@ const AdminLogin = () => {
         return () => dispatch(clearStatus());
     }, [isAuthenticated, navigate, dispatch]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const resultAction = await dispatch(loginAdmin({ email, password }));
-        if (loginAdmin.fulfilled.match(resultAction)) {
-            navigate('/dashboard');
-        }
-    };
+const handleSubmit = async (e) => {
+    e.preventDefault();
+        if (!email || !password) {
+        toast.warning("Please enter both email and password");
+        return;
+    }
 
+    const resultAction = await dispatch(loginAdmin({ email, password }));
+
+    if (loginAdmin.fulfilled.match(resultAction)) {
+        toast.success("Welcome back! Login successful.");
+        navigate('/dashboard');
+    } else {
+        const errorMessage = resultAction.payload || "Invalid credentials. Please try again.";
+        toast.error(errorMessage);
+    }
+};
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">

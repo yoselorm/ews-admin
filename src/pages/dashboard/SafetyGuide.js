@@ -12,6 +12,7 @@ import {
     Plus, Search, Trash2, Edit3, BookOpen,
     Loader2, X, ShieldAlert, CheckCircle, XCircle, Tag, Layers
 } from 'lucide-react';
+import toast from '../../components/Toast';
 
 const DEFAULT_FORM = {
     threshold_id: '',
@@ -102,7 +103,8 @@ const GuideFormBody = ({ formData, setFormData, thresholds, categories, error })
         <div>
             <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Guide Content</label>
             <textarea
-                required rows="4"
+                required 
+                rows="4"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                 placeholder="Provide detailed instructions..."
                 value={formData.content}
@@ -187,8 +189,33 @@ const SafetyGuides = () => {
         if (!selectedItem) return;
         try {
             await dispatch(deleteSafetyGuide(selectedItem.id)).unwrap();
+            toast.success("Guide deleted successfully!");
             closeModal();
-        } catch (err) { console.error("Delete failed", err); }
+        } catch (err) { 
+            toast.error(err || "Failed to delete guide. Please try again.");
+            console.error("Delete failed", err); 
+        }
+    };
+
+    const handleCreate = async () => {
+        try {
+            await dispatch(createSafetyGuide(formData)).unwrap();
+            toast.success("Guide created successfully!");
+        } catch (err) {
+            toast.error(err || "Failed to create guide. Please check your input and try again.");
+            console.error("Create failed", err);
+        }
+    };
+
+    const handleUpdate = async () => {
+        if (!selectedItem) return;
+        try {
+            await dispatch(updateSafetyGuide({ id: selectedItem.id, data: formData })).unwrap();
+            toast.success("Guide updated successfully!");
+        } catch (err) {
+            toast.error(err || "Failed to update guide. Please check your input and try again.");
+            console.error("Update failed", err);
+        }
     };
 
     const FooterButtons = ({ onSubmit, submitLabel }) => (
@@ -289,14 +316,14 @@ const SafetyGuides = () => {
             {modal === 'add' && (
                 <ModalShell title="New Safety Guide" onClose={closeModal}>
                     <GuideFormBody formData={formData} setFormData={setFormData} thresholds={thresholds} categories={categories} error={error} />
-                    <FooterButtons onSubmit={() => dispatch(createSafetyGuide(formData))} submitLabel="Create Guide" />
+                    <FooterButtons onSubmit={handleCreate} submitLabel="Create Guide" />
                 </ModalShell>
             )}
 
             {modal === 'edit' && (
                 <ModalShell title="Update Safety Guide" onClose={closeModal}>
                     <GuideFormBody formData={formData} setFormData={setFormData} thresholds={thresholds} categories={categories} error={error} />
-                    <FooterButtons onSubmit={() => dispatch(updateSafetyGuide({ id: selectedItem.id, data: formData }))} submitLabel="Save Changes" />
+                    <FooterButtons onSubmit={handleUpdate} submitLabel="Save Changes" />
                 </ModalShell>
             )}
 

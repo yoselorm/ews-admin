@@ -35,7 +35,7 @@ export const updateThreshold = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await api.put(`/v1/admin/weather-thresholds/${id}`, data);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Failed to update threshold');
     }
@@ -98,7 +98,7 @@ const thresholdSlice = createSlice({
       .addCase(createThreshold.fulfilled, (state, action) => {
         state.actionLoading = false;
         state.success = true;
-        state.list.unshift(action.payload); 
+        state.list.unshift(action.payload.data); 
       })
       .addCase(createThreshold.rejected, (state, action) => {
         state.actionLoading = false;

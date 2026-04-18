@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import Pagination from '../../components/Pagination';
 import { fetchCommunityList } from '../../redux/CommunitySlice';
+import toast from '../../components/Toast';
 
 const AlertsManagement = () => {
   const dispatch = useDispatch();
@@ -32,17 +33,33 @@ const AlertsManagement = () => {
           dispatch(fetchCommunityList());
       }, [dispatch])
 
-  const handleConfirmResolve = async () => {
-    if (!targetAlert) return;
-    const result = await dispatch(resolveAlert(targetAlert.id));
-    if (!result.error) setIsResolveModalOpen(false);
-  };
+const handleConfirmResolve = async () => {
+  if (!targetAlert) return;
 
-  const handleConfirmDelete = async () => {
-    if (!targetAlert) return;
-    const result = await dispatch(deleteAlert(targetAlert.id));
-    if (!result.error) setIsDeleteModalOpen(false);
-  };
+  try {
+    await dispatch(resolveAlert(targetAlert.id)).unwrap();
+
+    toast.success("Alert resolved successfully");
+    
+    setIsResolveModalOpen(false);
+  } catch (err) {
+    toast.error(err || "Failed to resolve the alert");
+  }
+};
+
+const handleConfirmDelete = async () => {
+  if (!targetAlert) return;
+
+  try {
+    await dispatch(deleteAlert(targetAlert.id)).unwrap();
+
+    toast.success("Alert deleted successfully");
+    
+    setIsDeleteModalOpen(false);
+  } catch (err) {
+    toast.error(err || "Failed to delete the alert");
+  }
+};
 
   const getRiskStyle = (level) => {
     switch (level) {
@@ -219,11 +236,13 @@ const AlertsManagement = () => {
                 <div className="flex flex-col gap-4">
                   <button 
                     onClick={handleConfirmResolve} disabled={actionLoading}
-                    className="w-full bg-slate-900 hover:bg-black text-white py-6 rounded-[28px] font-black shadow-xl shadow-slate-200 transition-all"
+                    className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
                   >
                     {actionLoading ? <Loader2 className="animate-spin" size={24} /> : 'Confirm Resolution'}
                   </button>
-                  <button onClick={() => setIsResolveModalOpen(false)} className="w-full bg-slate-50 text-slate-400 py-6 rounded-[28px] font-black">Cancel</button>
+                  <button onClick={() => setIsResolveModalOpen(false)} className="flex-1 px-4 py-3 bg-slate-50 text-slate-400 rounded-xl font-bold hover:bg-slate-200 disabled:opacity-50 transition-all">
+                    Cancel
+                  </button>
                 </div>
               </motion.div>
             )}

@@ -7,65 +7,123 @@ import {
     updatePregnantWoman, updateLactatingMother, updateHealthWorker, updateAssemblyOfficial
 } from '../../redux/UserSlice';
 import { fetchCommunityList } from '../../redux/CommunitySlice';
+import { fetchLanguageList } from '../../redux/LanguageSlice';
+import { fetchDistrictsList } from '../../redux/DistrictSlice';
 import Pagination from '../../components/Pagination';
 import {
     Search, Plus, Eye, Edit3, Trash2, Filter,
     User, Loader2, X,
-    Heart, ShieldCheck, Briefcase, AlertTriangle, UserCheck, Baby
+    Heart, ShieldCheck, Briefcase, AlertTriangle, UserCheck, Baby, PlusCircle, MinusCircle
 } from 'lucide-react';
 
-
-const BASE_FIELDS = ['first_name', 'last_name', 'email', 'phone_number', 'dob', 'gender', 'community_id', 'role'];
+// ─── Role-specific payload fields ─────────────────────────────────────────────
+const BASE_FIELDS = ['first_name', 'last_name', 'email', 'phone_number', 'dob', 'gender', 'language_id', 'community_id', 'role'];
 
 const ROLE_FIELDS = {
-    pregnant_woman:    [...BASE_FIELDS, 'gestational_age_weeks', 'expected_delivery_date', 'gravida', 'parity', 'blood_group', 'anc_facility'],
-    lactating_mother:  [...BASE_FIELDS, 'baby_first_name', 'baby_last_name', 'baby_dob', 'birth_weight_kg', 'mode_of_delivery', 'number_of_babies'],
-    health_worker:     [...BASE_FIELDS, 'staff_id', 'facility_name', 'facility_type', 'qualification', 'years_of_experience'],
-    assembly_official: [...BASE_FIELDS, 'title', 'jurisdiction', 'district_id'],
+    pregnant_woman: [
+        ...BASE_FIELDS,
+        'gestational_age_weeks', 'expected_delivery_date', 'gravida', 'parity',
+        'blood_group', 'health_worker_id', 'anc_facility',
+        'emergency_contact_name', 'emergency_contact_phone', 'medical_conditions',
+    ],
+    lactating_mother: [
+        ...BASE_FIELDS,
+        'baby_first_name', 'baby_last_name', 'baby_dob', 'birth_weight_kg',
+        'baby_gender', 'mode_of_delivery', 'number_of_babies', 'delivery_location',
+        'delivery_date', 'emergency_contact_name', 'emergency_contact_phone',
+        'health_worker_id',
+    ],
+    health_worker: [
+        ...BASE_FIELDS,
+        'staff_id', 'facility_name', 'facility_type', 'district_id',
+        'qualification', 'years_of_experience',
+    ],
+    assembly_official: [
+        ...BASE_FIELDS,
+        'district_id', 'title', 'jurisdiction',
+    ],
 };
 
 const buildPayload = (formData) => {
     const fields = ROLE_FIELDS[formData.role] || BASE_FIELDS;
     return fields.reduce((acc, key) => {
-        if (formData[key] !== '' && formData[key] !== null && formData[key] !== undefined) {
-            acc[key] = formData[key];
+        const val = formData[key];
+        if (val !== '' && val !== null && val !== undefined) {
+            acc[key] = val;
         }
         return acc;
     }, {});
 };
 
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+const getRoleConfig = (role) => {
+    const configs = {
+        pregnant_woman:    { icon: <Heart size={12}/>,       color: 'bg-rose-50 text-rose-600 border-rose-100',          label: 'Pregnant' },
+        lactating_mother:  { icon: <Baby size={12}/>,        color: 'bg-blue-50 text-blue-600 border-blue-100',          label: 'Lactating' },
+        health_worker:     { icon: <ShieldCheck size={12}/>, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Health Worker' },
+        assembly_official: { icon: <Briefcase size={12}/>,   color: 'bg-amber-50 text-amber-600 border-amber-100',       label: 'Official' },
+    };
+    return configs[role] ?? null;
+};
+
+// ─── Reusable form field wrappers (keeps original premium-input styling) ───────
+const FL = ({ children }) => <label className="text-[10px] font-black text-slate-500 uppercase ml-1 block mb-1">{children}</label>;
+const FW = ({ children, className = '' }) => <div className={`space-y-1.5 ${className}`}>{children}</div>;
+
 const UserManagement = () => {
     const dispatch = useDispatch();
 
-    // Global State
-    const { userList, userMeta, usersLoading, userActionLoading, userSuccess } = useSelector(state => state.users);
-    const { list } = useSelector(state => state.communities);
+    const { userList, userMeta, usersLoading, userActionLoading, userSuccess } = useSelector(s => s.users);
+    const { list }  = useSelector(s => s.communities);
+    const { languageList }   = useSelector(s => s.languages);   // fetchLanguageList
+    const { dlist }   = useSelector(s => s.districts);   // fetchDistrictsList
 
-    // Local UI State
-    const [searchTerm, setSearchTerm] = useState('');
-    const [roleFilter, setRoleFilter] = useState('');
-    const [communityFilter, setCommunityFilter] = useState(''); // ← new
-    const [currentPage, setCurrentPage] = useState(1);
-    const [activeModal, setActiveModal] = useState(null);
-    const [editMode, setEditMode] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [searchTerm,      setSearchTerm]      = useState('');
+    const [roleFilter,      setRoleFilter]      = useState('');
+    const [communityFilter, setCommunityFilter] = useState('');
+    const [currentPage,     setCurrentPage]     = useState(1);
+    const [activeModal,     setActiveModal]     = useState(null);
+    const [editMode,        setEditMode]        = useState(false);
+    const [selectedUser,    setSelectedUser]    = useState(null);
 
     const initialForm = {
-        first_name: '', last_name: '', email: '', phone_number: '', dob: '',
-        gender: 'female', community_id: '', role: 'pregnant_woman',
-        // Pregnant
-        gestational_age_weeks: '', expected_delivery_date: '', gravida: '', parity: '', blood_group: '', anc_facility: '',
-        // Lactating
-        baby_first_name: '', baby_last_name: '', baby_dob: '', birth_weight_kg: '', mode_of_delivery: '', number_of_babies: '',
-        // Health Worker / Official
-        staff_id: '', facility_name: '', facility_type: '', qualification: '', years_of_experience: '', title: '', jurisdiction: '', district_id: ''
+        // shared
+        first_name: '', last_name: '', email: '', phone_number: '',
+        dob: '', gender: 'female', language_id: '', community_id: '',
+        role: 'pregnant_woman',
+        // pregnant
+        gestational_age_weeks: '', expected_delivery_date: '', gravida: '',
+        parity: '', blood_group: '', health_worker_id: '', anc_facility: '',
+        emergency_contact_name: '', emergency_contact_phone: '',
+        medical_conditions: [],          // array of strings
+        // lactating
+        baby_first_name: '', baby_last_name: '', baby_dob: '',
+        birth_weight_kg: '', baby_gender: '', mode_of_delivery: '',
+        number_of_babies: '', delivery_location: '', delivery_date: '',
+        // health worker
+        staff_id: '', facility_name: '', facility_type: '', district_id: '',
+        qualification: '', years_of_experience: '',
+        // official
+        title: '', jurisdiction: '',
     };
 
     const [formData, setFormData] = useState(initialForm);
+    const set = (key) => (e) => setFormData(prev => ({ ...prev, [key]: e.target.value }));
+
+    // medical_conditions array helpers
+    const addCondition = () => setFormData(prev => ({ ...prev, medical_conditions: [...prev.medical_conditions, ''] }));
+    const removeCondition = (i) => setFormData(prev => ({ ...prev, medical_conditions: prev.medical_conditions.filter((_, idx) => idx !== i) }));
+    const updateCondition = (i, val) => setFormData(prev => {
+        const arr = [...prev.medical_conditions];
+        arr[i] = val;
+        return { ...prev, medical_conditions: arr };
+    });
 
     useEffect(() => {
         dispatch(fetchUsers({ limit: 15, search: '', role: '' }));
         dispatch(fetchCommunityList());
+        dispatch(fetchLanguageList());
+        dispatch(fetchDistrictsList());
     }, [dispatch]);
 
     useEffect(() => {
@@ -75,17 +133,16 @@ const UserManagement = () => {
             dispatch(resetUserStatus());
             dispatch(fetchUsers({ page: currentPage, limit: 15, search: searchTerm, role: roleFilter, community_id: communityFilter }));
         }
-    }, [userSuccess, communityFilter, currentPage, dispatch, initialForm, roleFilter, searchTerm]);
+    }, [userSuccess]);
 
     const openEdit = (user) => {
         setSelectedUser(user);
         setEditMode(true);
         setFormData({
-            ...initialForm,
-            ...user,
-            ...user.profile,
+            ...initialForm, ...user, ...user.profile,
             community_id: user.community?.id || user.community_id || '',
-            role: user.role
+            medical_conditions: user.profile?.medical_conditions || [],
+            role: user.role,
         });
         setActiveModal('form');
     };
@@ -100,10 +157,14 @@ const UserManagement = () => {
         dispatch(fetchUsers({ page: p, limit: 15, search: searchTerm, role: roleFilter, community_id: communityFilter }));
     };
 
-    // ── Sends ONLY the fields relevant to the selected role ──────────────────
     const handleSave = (e) => {
         e.preventDefault();
         const payload = buildPayload(formData);
+        // strip empty medical_conditions entries
+        if (payload.medical_conditions) {
+            payload.medical_conditions = payload.medical_conditions.filter(c => c.trim() !== '');
+            if (payload.medical_conditions.length === 0) delete payload.medical_conditions;
+        }
         const actionMap = {
             pregnant_woman:    editMode ? updatePregnantWoman    : createPregnantWoman,
             lactating_mother:  editMode ? updateLactatingMother  : createLactatingMother,
@@ -115,24 +176,147 @@ const UserManagement = () => {
         dispatch(action(editMode ? { id: selectedUser.id, data: payload } : payload));
     };
 
-    const getRoleConfig = (role) => {
-        const configs = {
-            pregnant_woman:    { icon: <Heart size={12}/>,       color: 'bg-rose-50 text-rose-600 border-rose-100',          label: 'Pregnant' },
-            lactating_mother:  { icon: <Baby size={12}/>,        color: 'bg-blue-50 text-blue-600 border-blue-100',          label: 'Lactating' },
-            health_worker:     { icon: <ShieldCheck size={12}/>, color: 'bg-emerald-50 text-emerald-600 border-emerald-100', label: 'Health Worker' },
-            assembly_official: { icon: <Briefcase size={12}/>,   color: 'bg-amber-50 text-amber-600 border-amber-100',       label: 'Official' }
-        };
-        return configs[role] ?? null;
+    // ── Shared dropdowns ─────────────────────────────────────────────────────
+    const LanguageSelect = ({ value, onChange }) => (
+        <select className="premium-input w-full cursor-pointer" value={value} onChange={onChange}>
+            <option value="">Select Language...</option>
+            {languageList?.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+        </select>
+    );
+
+    const DistrictSelect = ({ value, onChange }) => (
+        <select className="premium-input w-full cursor-pointer" value={value} onChange={onChange}>
+            <option value="">Select District...</option>
+            {dlist?.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+        </select>
+    );
+
+    // ── Role-specific form sections ──────────────────────────────────────────
+    const PregnantFields = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            <FW><FL>Gestational Age (weeks)</FL><input type="number" placeholder="e.g. 20" className="premium-input bg-white w-full" value={formData.gestational_age_weeks} onChange={set('gestational_age_weeks')} /></FW>
+            <FW><FL>Expected Delivery Date</FL><input type="date" className="premium-input bg-white w-full" value={formData.expected_delivery_date} onChange={set('expected_delivery_date')} /></FW>
+            <FW><FL>Gravida</FL><input type="number" placeholder="No. of pregnancies" className="premium-input bg-white w-full" value={formData.gravida} onChange={set('gravida')} /></FW>
+            <FW><FL>Parity</FL><input type="number" placeholder="No. of births" className="premium-input bg-white w-full" value={formData.parity} onChange={set('parity')} /></FW>
+            <FW>
+                <FL>Blood Group</FL>
+                <select className="premium-input bg-white w-full cursor-pointer" value={formData.blood_group} onChange={set('blood_group')}>
+                    <option value="">Select...</option>
+                    {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(g => <option key={g} value={g}>{g}</option>)}
+                </select>
+            </FW>
+            <FW><FL>ANC Facility</FL><input placeholder="e.g. Ridge Hospital" className="premium-input bg-white w-full" value={formData.anc_facility} onChange={set('anc_facility')} /></FW>
+            <FW><FL>Health Worker ID</FL><input placeholder="Assigned health worker ID" className="premium-input bg-white w-full" value={formData.health_worker_id} onChange={set('health_worker_id')} /></FW>
+            <FW><FL>Emergency Contact Name</FL><input placeholder="Full name" className="premium-input bg-white w-full" value={formData.emergency_contact_name} onChange={set('emergency_contact_name')} /></FW>
+            <FW><FL>Emergency Contact Phone</FL><input placeholder="Phone number" className="premium-input bg-white w-full" value={formData.emergency_contact_phone} onChange={set('emergency_contact_phone')} /></FW>
+
+            {/* Medical conditions — dynamic list */}
+            <FW className="sm:col-span-2">
+                <div className="flex items-center justify-between mb-2">
+                    <FL>Medical Conditions</FL>
+                    <button type="button" onClick={addCondition} className="flex items-center gap-1 text-[10px] font-black text-purple-600 hover:text-purple-700 uppercase tracking-wider">
+                        <PlusCircle size={14}/> Add
+                    </button>
+                </div>
+                {formData.medical_conditions.length === 0 && (
+                    <p className="text-[11px] text-slate-300 italic px-1">No conditions added yet.</p>
+                )}
+                <div className="space-y-2">
+                    {formData.medical_conditions.map((c, i) => (
+                        <div key={i} className="flex gap-2 items-center">
+                            <input
+                                placeholder={`Condition ${i + 1}`}
+                                className="premium-input bg-white flex-1"
+                                value={c}
+                                onChange={(e) => updateCondition(i, e.target.value)}
+                            />
+                            <button type="button" onClick={() => removeCondition(i)} className="text-red-400 hover:text-red-600 shrink-0">
+                                <MinusCircle size={18}/>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </FW>
+        </div>
+    );
+
+    const LactatingFields = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            <FW><FL>Baby's First Name *</FL><input required placeholder="Baby first name" className="premium-input bg-white w-full" value={formData.baby_first_name} onChange={set('baby_first_name')} /></FW>
+            <FW><FL>Baby's Last Name *</FL><input required placeholder="Baby last name" className="premium-input bg-white w-full" value={formData.baby_last_name} onChange={set('baby_last_name')} /></FW>
+            <FW><FL>Baby's Date of Birth *</FL><input required type="date" className="premium-input bg-white w-full" value={formData.baby_dob} onChange={set('baby_dob')} /></FW>
+            <FW>
+                <FL>Baby's Gender</FL>
+                <select className="premium-input bg-white w-full cursor-pointer" value={formData.baby_gender} onChange={set('baby_gender')}>
+                    <option value="">Select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </FW>
+            <FW><FL>Birth Weight (kg)</FL><input type="number" step="0.1" placeholder="e.g. 3.5" className="premium-input bg-white w-full" value={formData.birth_weight_kg} onChange={set('birth_weight_kg')} /></FW>
+            <FW>
+                <FL>Mode of Delivery</FL>
+                <select className="premium-input bg-white w-full cursor-pointer" value={formData.mode_of_delivery} onChange={set('mode_of_delivery')}>
+                    <option value="">Select...</option>
+                    <option value="vaginal">Vaginal</option>
+                    <option value="caesarean">Caesarean (CS)</option>
+                </select>
+            </FW>
+            <FW><FL>Number of Babies</FL><input type="number" min="1" placeholder="1" className="premium-input bg-white w-full" value={formData.number_of_babies} onChange={set('number_of_babies')} /></FW>
+            <FW><FL>Delivery Location</FL><input placeholder="e.g. Korle Bu" className="premium-input bg-white w-full" value={formData.delivery_location} onChange={set('delivery_location')} /></FW>
+            <FW><FL>Delivery Date</FL><input type="date" className="premium-input bg-white w-full" value={formData.delivery_date} onChange={set('delivery_date')} /></FW>
+            <FW><FL>Health Worker ID</FL><input placeholder="Assigned health worker ID" className="premium-input bg-white w-full" value={formData.health_worker_id} onChange={set('health_worker_id')} /></FW>
+            <FW><FL>Emergency Contact Name</FL><input placeholder="Full name" className="premium-input bg-white w-full" value={formData.emergency_contact_name} onChange={set('emergency_contact_name')} /></FW>
+            <FW><FL>Emergency Contact Phone</FL><input placeholder="Phone number" className="premium-input bg-white w-full" value={formData.emergency_contact_phone} onChange={set('emergency_contact_phone')} /></FW>
+        </div>
+    );
+
+    const HealthWorkerFields = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            <FW><FL>Staff ID *</FL><input required placeholder="e.g. HW-0012" className="premium-input bg-white w-full" value={formData.staff_id} onChange={set('staff_id')} /></FW>
+            <FW><FL>Facility Name</FL><input placeholder="e.g. Korle Bu Teaching Hospital" className="premium-input bg-white w-full" value={formData.facility_name} onChange={set('facility_name')} /></FW>
+            <FW>
+                <FL>Facility Type</FL>
+                <select className="premium-input bg-white w-full cursor-pointer" value={formData.facility_type} onChange={set('facility_type')}>
+                    <option value="">Select...</option>
+                    <option value="Hospital">Hospital</option>
+                    <option value="Clinic">Clinic</option>
+                    <option value="Health Centre">Health Centre</option>
+                    <option value="CHPS">CHPS Compound</option>
+                </select>
+            </FW>
+            <FW><FL>District</FL><DistrictSelect value={formData.district_id} onChange={set('district_id')} /></FW>
+            <FW><FL>Qualification</FL><input placeholder="e.g. BSc Nursing" className="premium-input bg-white w-full" value={formData.qualification} onChange={set('qualification')} /></FW>
+            <FW><FL>Years of Experience</FL><input type="number" min="0" placeholder="0" className="premium-input bg-white w-full" value={formData.years_of_experience} onChange={set('years_of_experience')} /></FW>
+        </div>
+    );
+
+    const OfficialFields = () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+            <FW><FL>Official Title</FL><input placeholder="e.g. District Officer" className="premium-input bg-white w-full" value={formData.title} onChange={set('title')} /></FW>
+            <FW><FL>Jurisdiction</FL><input placeholder="e.g. Accra Central" className="premium-input bg-white w-full" value={formData.jurisdiction} onChange={set('jurisdiction')} /></FW>
+            <FW><FL>District</FL><DistrictSelect value={formData.district_id} onChange={set('district_id')} /></FW>
+        </div>
+    );
+
+    const RoleFields = () => {
+        switch (formData.role) {
+            case 'pregnant_woman':    return <PregnantFields />;
+            case 'lactating_mother':  return <LactatingFields />;
+            case 'health_worker':     return <HealthWorkerFields />;
+            case 'assembly_official': return <OfficialFields />;
+            default: return null;
+        }
     };
 
+    // ────────────────────────────────────────────────────────────────────────
     return (
         <div className="bg-[#FBFBFB] min-h-screen">
-            {/* Header Section */}
+            {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10">
                 <div className="flex items-center gap-4">
                     <div className="bg-slate-900 p-3 sm:p-4 rounded-3xl text-white shadow-xl shadow-slate-200 shrink-0">
-                        <UserCheck size={16} className="sm:hidden" />
-                        <UserCheck size={22} className="hidden sm:block" />
+                        <UserCheck size={26}/>
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">User Management</h1>
@@ -159,37 +343,24 @@ const UserManagement = () => {
                     />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
-                    <select
-                        className="bg-slate-50 border-none rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-bold text-slate-500 outline-none cursor-pointer"
-                        value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
-                    >
+                    <select className="bg-slate-50 border-none rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-bold text-slate-500 outline-none cursor-pointer" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
                         <option value="">All Role Types</option>
                         <option value="pregnant_woman">Pregnant Women</option>
                         <option value="lactating_mother">Lactating Mothers</option>
                         <option value="health_worker">Health Workers</option>
                         <option value="assembly_official">Assembly Officials</option>
                     </select>
-                    {/* Community filter — sends community_id as a query param */}
-                    <select
-                        className="bg-slate-50 border-none rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-bold text-slate-500 outline-none cursor-pointer"
-                        value={communityFilter} onChange={(e) => setCommunityFilter(e.target.value)}
-                    >
+                    <select className="bg-slate-50 border-none rounded-2xl px-4 sm:px-6 py-3 sm:py-4 font-bold text-slate-500 outline-none cursor-pointer" value={communityFilter} onChange={(e) => setCommunityFilter(e.target.value)}>
                         <option value="">All Communities</option>
-                        {list?.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
+                        {list?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
-                    <button
-                        onClick={handleFilter}
-                        className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black hover:bg-black transition-all"
-                    >
-                        Filter
-                    </button>
+                    <button onClick={handleFilter} className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black hover:bg-black transition-all">Filter</button>
                 </div>
             </div>
 
-            {/* Table — desktop */}
+            {/* Table */}
             <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+                {/* Desktop */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-slate-50 border-b border-slate-100">
@@ -221,13 +392,10 @@ const UserManagement = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 lg:px-10 py-6">
-                                            {rc ? (
-                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[9px] font-black uppercase tracking-wider ${rc.color}`}>
-                                                    {rc.icon} {rc.label}
-                                                </div>
-                                            ) : (
-                                                <span className="text-[10px] text-slate-300 italic font-bold">No role</span>
-                                            )}
+                                            {rc
+                                                ? <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-[9px] font-black uppercase tracking-wider ${rc.color}`}>{rc.icon}{rc.label}</div>
+                                                : <span className="text-[10px] text-slate-300 italic font-bold">No role</span>
+                                            }
                                         </td>
                                         <td className="px-6 lg:px-10 py-6 text-sm font-bold text-slate-500">
                                             {user.community?.name || <span className="text-slate-300 italic font-normal">Unassigned</span>}
@@ -246,7 +414,7 @@ const UserManagement = () => {
                     </table>
                 </div>
 
-                {/* Card list — mobile */}
+                {/* Mobile cards */}
                 <div className="md:hidden divide-y divide-slate-50">
                     {usersLoading ? (
                         <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-purple-600" size={32}/></div>
@@ -263,16 +431,11 @@ const UserManagement = () => {
                                     <p className="font-extrabold text-slate-800 truncate">{user.first_name} {user.last_name}</p>
                                     <p className="text-[10px] font-bold text-slate-400 uppercase">{user.phone_number}</p>
                                     <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                        {rc ? (
-                                            <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-black uppercase ${rc.color}`}>
-                                                {rc.icon} {rc.label}
-                                            </div>
-                                        ) : (
-                                            <span className="text-[9px] text-slate-300 italic">No role</span>
-                                        )}
-                                        {user.community?.name && (
-                                            <span className="text-[9px] text-slate-400 font-bold">{user.community.name}</span>
-                                        )}
+                                        {rc
+                                            ? <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[9px] font-black uppercase ${rc.color}`}>{rc.icon}{rc.label}</div>
+                                            : <span className="text-[9px] text-slate-300 italic">No role</span>
+                                        }
+                                        {user.community?.name && <span className="text-[9px] text-slate-400 font-bold">{user.community.name}</span>}
                                     </div>
                                 </div>
                                 <div className="flex gap-1 shrink-0">
@@ -293,9 +456,10 @@ const UserManagement = () => {
                 />
             </div>
 
-            {/* MODALS */}
+            {/* ── MODALS ── */}
             <AnimatePresence>
-                {/* ── FORM MODAL ─────────────────────────────────────────────────── */}
+
+                {/* FORM MODAL */}
                 {activeModal === 'form' && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-6"
@@ -307,17 +471,19 @@ const UserManagement = () => {
                             <div className="p-6 sm:p-8 border-b border-slate-50 flex justify-between items-center shrink-0">
                                 <div>
                                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{editMode ? 'Update Member Profile' : 'Enroll New Member'}</h2>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Please ensure all required fields (*) are filled.</p>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Fields marked * are required.</p>
                                 </div>
                                 <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-slate-50 rounded-full transition-all text-slate-300"><X size={28}/></button>
                             </div>
 
                             <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 sm:p-10 space-y-8 sm:space-y-10 custom-scrollbar">
+
                                 {/* Role Switcher */}
                                 <div className="flex flex-wrap sm:flex-nowrap gap-2 p-1.5 bg-slate-50 rounded-2xl border border-slate-100">
                                     {['pregnant_woman', 'lactating_mother', 'health_worker', 'assembly_official'].map(r => (
                                         <button
-                                            key={r} type="button" onClick={() => setFormData({...formData, role: r})}
+                                            key={r} type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, role: r }))}
                                             className={`flex-1 min-w-[calc(50%-4px)] sm:min-w-0 py-3 sm:py-4 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${formData.role === r ? 'bg-white text-purple-600 shadow-sm border border-purple-100' : 'text-slate-400 hover:text-slate-500'}`}
                                         >
                                             {r.replace(/_/g, ' ')}
@@ -325,66 +491,43 @@ const UserManagement = () => {
                                     ))}
                                 </div>
 
-                                {/* Base Info */}
+                                {/* Core identity — same for all roles */}
                                 <div className="space-y-6">
                                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[3px] flex items-center gap-2"><User size={14}/> Core Identity</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                                        {[
-                                            { label: 'First Name *', key: 'first_name', type: 'text' },
-                                            { label: 'Last Name *',  key: 'last_name',  type: 'text' },
-                                            { label: 'Phone Number *', key: 'phone_number', type: 'text' },
-                                            { label: 'Date of Birth *', key: 'dob', type: 'date' },
-                                            { label: 'Email Address', key: 'email', type: 'email' },
-                                        ].map(f => (
-                                            <div key={f.key} className="space-y-1.5">
-                                                <label className="text-[10px] font-black text-slate-400 uppercase ml-1">{f.label}</label>
-                                                <input required={f.label.includes('*')} type={f.type} className="premium-input w-full" value={formData[f.key]} onChange={(e) => setFormData({...formData, [f.key]: e.target.value})} />
-                                            </div>
-                                        ))}
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Assigned Community *</label>
-                                            <select
-                                                required className="premium-input w-full cursor-pointer"
-                                                value={formData.community_id}
-                                                onChange={(e) => setFormData({...formData, community_id: e.target.value})}
-                                            >
-                                                <option value="">Select Community...</option>
-                                                {list?.map(comm => (
-                                                    <option key={comm.id} value={comm.id}>{comm.name}</option>
-                                                ))}
+                                        <FW><FL>First Name *</FL><input required placeholder="First name" className="premium-input w-full" value={formData.first_name} onChange={set('first_name')} /></FW>
+                                        <FW><FL>Last Name *</FL><input required placeholder="Last name" className="premium-input w-full" value={formData.last_name} onChange={set('last_name')} /></FW>
+                                        <FW><FL>Phone Number *</FL><input required placeholder="0241234567" className="premium-input w-full" value={formData.phone_number} onChange={set('phone_number')} /></FW>
+                                        <FW><FL>Date of Birth *</FL><input required type="date" className="premium-input w-full" value={formData.dob} onChange={set('dob')} /></FW>
+                                        <FW><FL>Email Address</FL><input type="email" placeholder="user@example.com" className="premium-input w-full" value={formData.email} onChange={set('email')} /></FW>
+                                        <FW>
+                                            <FL>Gender</FL>
+                                            <select className="premium-input w-full cursor-pointer" value={formData.gender} onChange={set('gender')}>
+                                                <option value="female">Female</option>
+                                                <option value="male">Male</option>
+                                                <option value="other">Other</option>
                                             </select>
-                                        </div>
+                                        </FW>
+                                        <FW>
+                                            <FL>Language</FL>
+                                            <LanguageSelect value={formData.language_id} onChange={set('language_id')} />
+                                        </FW>
+                                        <FW>
+                                            <FL>Assigned Community *</FL>
+                                            <select required className="premium-input w-full cursor-pointer" value={formData.community_id} onChange={set('community_id')}>
+                                                <option value="">Select Community...</option>
+                                                {list?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                            </select>
+                                        </FW>
                                     </div>
                                 </div>
 
-                                {/* Role-specific fields */}
+                                {/* Role-specific section */}
                                 <div className="p-6 sm:p-10 bg-slate-50 rounded-[32px] sm:rounded-[40px] border border-slate-100 space-y-8">
                                     <h4 className="text-[10px] font-black text-purple-600 uppercase tracking-[3px] border-b border-slate-200 pb-4 flex items-center gap-2">
                                         <Filter size={14}/> {formData.role?.replace(/_/g, ' ')} Profile Details
                                     </h4>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
-                                        {formData.role === 'pregnant_woman' && (<>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Gestational Weeks</label><input placeholder="Weeks" className="premium-input bg-white w-full" value={formData.gestational_age_weeks} onChange={(e) => setFormData({...formData, gestational_age_weeks: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">EDD (Expected Delivery)</label><input type="date" className="premium-input bg-white w-full" value={formData.expected_delivery_date} onChange={(e) => setFormData({...formData, expected_delivery_date: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Gravida</label><input placeholder="No. of Pregnancies" className="premium-input bg-white w-full" value={formData.gravida} onChange={(e) => setFormData({...formData, gravida: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">ANC Facility Name</label><input placeholder="e.g. Ridge Hospital" className="premium-input bg-white w-full" value={formData.anc_facility} onChange={(e) => setFormData({...formData, anc_facility: e.target.value})} /></div>
-                                        </>)}
-                                        {formData.role === 'lactating_mother' && (<>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Baby's First Name *</label><input placeholder="Baby First Name" className="premium-input bg-white w-full" value={formData.baby_first_name} onChange={(e) => setFormData({...formData, baby_first_name: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Baby's Last Name *</label><input placeholder="Baby Last Name" className="premium-input bg-white w-full" value={formData.baby_last_name} onChange={(e) => setFormData({...formData, baby_last_name: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Birth Weight (kg)</label><input placeholder="e.g. 3.5" className="premium-input bg-white w-full" value={formData.birth_weight_kg} onChange={(e) => setFormData({...formData, birth_weight_kg: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Mode of Delivery</label><input placeholder="e.g. CS or Vaginal" className="premium-input bg-white w-full" value={formData.mode_of_delivery} onChange={(e) => setFormData({...formData, mode_of_delivery: e.target.value})} /></div>
-                                        </>)}
-                                        {formData.role === 'health_worker' && (<>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Staff Identification ID *</label><input required placeholder="ID Number" className="premium-input bg-white w-full" value={formData.staff_id} onChange={(e) => setFormData({...formData, staff_id: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Primary Facility</label><input placeholder="Facility Name" className="premium-input bg-white w-full" value={formData.facility_name} onChange={(e) => setFormData({...formData, facility_name: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Professional Qualification</label><input placeholder="e.g. Registered Nurse" className="premium-input bg-white w-full" value={formData.qualification} onChange={(e) => setFormData({...formData, qualification: e.target.value})} /></div>
-                                        </>)}
-                                        {formData.role === 'assembly_official' && (<>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Official Job Title</label><input placeholder="e.g. Assemblyman" className="premium-input bg-white w-full" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} /></div>
-                                            <div className="space-y-1.5"><label className="text-[10px] font-black text-slate-500 uppercase ml-1">Jurisdiction Area</label><input placeholder="e.g. Ward 4" className="premium-input bg-white w-full" value={formData.jurisdiction} onChange={(e) => setFormData({...formData, jurisdiction: e.target.value})} /></div>
-                                        </>)}
-                                    </div>
+                                    <RoleFields />
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -398,7 +541,7 @@ const UserManagement = () => {
                     </motion.div>
                 )}
 
-                {/* ── VIEW MODAL ──────────────────────────────────────────────────── */}
+                {/* VIEW MODAL */}
                 {activeModal === 'view' && selectedUser && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-6"
@@ -448,7 +591,12 @@ const UserManagement = () => {
                                             {Object.entries(selectedUser.profile).map(([key, val]) => (
                                                 <div key={key}>
                                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[2px] mb-0.5">{key.replace(/_/g, ' ')}</p>
-                                                    <p className="text-sm font-bold text-slate-700">{val || <span className="text-slate-300 italic font-normal text-xs">—</span>}</p>
+                                                    <p className="text-sm font-bold text-slate-700">
+                                                        {Array.isArray(val)
+                                                            ? val.join(', ') || <span className="text-slate-300 italic font-normal text-xs">—</span>
+                                                            : val || <span className="text-slate-300 italic font-normal text-xs">—</span>
+                                                        }
+                                                    </p>
                                                 </div>
                                             ))}
                                         </div>
@@ -465,7 +613,7 @@ const UserManagement = () => {
                     </motion.div>
                 )}
 
-                {/* ── DELETE MODAL ────────────────────────────────────────────────── */}
+                {/* DELETE MODAL */}
                 {activeModal === 'delete' && selectedUser && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[100] bg-slate-900/80 flex items-end sm:items-center justify-center sm:p-6"

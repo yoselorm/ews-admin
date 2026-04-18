@@ -13,6 +13,17 @@ export const fetchLanguages = createAsyncThunk(
     }
   }
 );
+export const fetchLanguageList = createAsyncThunk(
+  'languages/fetchList',
+  async (__,{ rejectWithValue }) => {
+    try {
+      const response = await api.get(`/v1/admin/languages/lookup`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch languages');
+    }
+  }
+);
 
 export const createLanguage = createAsyncThunk(
   'languages/create',
@@ -67,6 +78,7 @@ const languageSlice = createSlice({
   initialState: {
     languages: [],
     currentLanguage: null,
+    languageList:[],
     loading: false,
     actionLoading: false,
     error: null,
@@ -96,6 +108,18 @@ const languageSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchLanguageList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchLanguageList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.languageList = action.payload.data;
+      })
+      .addCase(fetchLanguageList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
 
       .addCase(createLanguage.pending, (state) => { state.actionLoading = true; })
       .addCase(createLanguage.fulfilled, (state, action) => {

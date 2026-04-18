@@ -10,6 +10,14 @@ export const fetchDistricts = createAsyncThunk('districts/fetch', async (params,
         return rejectWithValue(err.response?.data?.message || 'Failed to fetch districts');
     }
 });
+export const fetchDistrictsList = createAsyncThunk('districts/fetchList', async (params, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/v1/admin/districts/lookup', { params });
+        return response.data;
+    } catch (err) {
+        return rejectWithValue(err.response?.data?.message || 'Failed to fetch districts');
+    }
+});
 
 export const createDistrict = createAsyncThunk('districts/create', async (data, { rejectWithValue }) => {
     try {
@@ -42,7 +50,8 @@ export const deleteDistrict = createAsyncThunk('districts/delete', async (id, { 
 const districtSlice = createSlice({
     name: 'districts',
     initialState: {
-        districtList: [],            
+        districtList: [],  
+        dlist:[],          
         districtMeta: null,          
         districtsLoading: false,      
         districtActionLoading: false, 
@@ -74,6 +83,19 @@ const districtSlice = createSlice({
                 state.districtMeta = action.payload.meta;
             })
             .addCase(fetchDistricts.rejected, (state, action) => {
+                state.districtsLoading = false;
+                state.districtError = action.payload;
+            })
+            // Fetch Districts List for dropdowns
+            .addCase(fetchDistrictsList.pending, (state) => {
+                state.districtsLoading = true;
+                state.districtError = null;
+            })
+            .addCase(fetchDistrictsList.fulfilled, (state, action) => {
+                state.districtsLoading = false;
+                state.dlist = action.payload.data; 
+            })
+            .addCase(fetchDistrictsList.rejected, (state, action) => {
                 state.districtsLoading = false;
                 state.districtError = action.payload;
             })

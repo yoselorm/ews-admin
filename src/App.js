@@ -17,6 +17,7 @@ import AlertsManagement from './pages/dashboard/Alert';
 import LanguageManagement from './pages/dashboard/Languages';
 import AudioTranslationManagement from './pages/dashboard/AudioTranslation';
 import AdminManagement from './pages/dashboard/AdminManagement';
+import HealthTips from './pages/dashboard/HealthTips';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="precautions" element={<Precautions />} />
         <Route path="safety-guides" element={<SafetyGuides />} />
         <Route path="safety-categories" element={<SafetyCategories />} />
+        <Route path="health-tips" element={<HealthTips />} />
         <Route path="geography" element={<GeographyPage />} />
         <Route path="users" element={<UserManagement />}  /> 
         <Route path="alerts" element={<AlertsManagement />}  />

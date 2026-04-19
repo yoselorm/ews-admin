@@ -14,6 +14,7 @@ import alertReducer from './redux/AlertSlice';
 import languageReducer from './redux/LanguageSlice';
 import audioTranslationReducer from './redux/AudioTranslationSlice';
 import adminReducer from './redux/AdminSlice';
+import healthTipsReducer from './redux/HealthTipsSlice';
 
 const store = configureStore({
     reducer: {
@@ -31,7 +32,8 @@ const store = configureStore({
         alerts: alertReducer,
         languages: languageReducer,
         audioTranslations: audioTranslationReducer,
-        admins: adminReducer
+        admins: adminReducer,
+        healthTips: healthTipsReducer
     }
 })
 

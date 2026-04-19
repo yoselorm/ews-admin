@@ -6,7 +6,8 @@ import {
     Loader2, CloudSun, Gauge, Globe,
     Languages,
     Music,
-    UserStar
+    UserStar,
+    HeartPlus
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAdmin } from '../../redux/AuthSlice';
@@ -41,6 +42,7 @@ const handleLogout = async () => {
         { name: 'Thresholds', path: '/dashboard/thresholds', icon: Gauge },
         { name: 'Precautions', path: '/dashboard/precautions', icon: ShieldCheck }, 
         { name: 'Safety Guides', path: '/dashboard/safety-guides', icon: ClipboardList },
+        { name: 'Health Tips', path: '/dashboard/health-tips', icon: HeartPlus },
         { name: 'Geography', path: '/dashboard/geography', icon: Globe },
         { name: 'Users', path: '/dashboard/users', icon: Users },
         { name: 'Alerts', path: '/dashboard/alerts', icon: Bell },

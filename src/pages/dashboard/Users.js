@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     fetchUsers, deleteUser, resetUserStatus,
     createPregnantWoman, createLactatingMother, createHealthWorker, createAssemblyOfficial,
-    updatePregnantWoman, updateLactatingMother, updateHealthWorker, updateAssemblyOfficial
+    updatePregnantWoman, updateLactatingMother, updateHealthWorker, updateAssemblyOfficial,
+    fetchHealthWorkers
 } from '../../redux/UserSlice';
 import { fetchCommunityList } from '../../redux/CommunitySlice';
 import { fetchLanguageList } from '../../redux/LanguageSlice';
@@ -52,7 +53,7 @@ const FW = ({ children, className = '' }) => <div className={`space-y-1.5 ${clas
 
 // ─── Role field sections — OUTSIDE the page component (fixes focus loss bug) ──
 
-const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, updateCondition }) => (
+const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, updateCondition,healthWorkers }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <FW>
             <FL>Gestational Age (weeks)</FL>
@@ -93,11 +94,22 @@ const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, 
                 value={formData.anc_facility}
                 onChange={(e) => setFormData(prev => ({ ...prev, anc_facility: e.target.value }))} />
         </FW>
-        <FW>
+        {/* <FW>
             <FL>Health Worker ID</FL>
             <input placeholder="Assigned health worker ID" className="premium-input bg-white w-full"
                 value={formData.health_worker_id}
                 onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))} />
+        </FW> */}
+        <FW>
+            <FL>Health Worker</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
+                value={formData.health_worker_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))}>
+                <option value="">Select...</option>
+                {healthWorkers?.map(hw => (
+                    <option key={hw.id} value={hw.id}>{hw.name}</option>
+                ))}
+            </select>
         </FW>
         <FW>
             <FL>Emergency Contact Name</FL>
@@ -109,6 +121,7 @@ const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, 
             <FL>Emergency Contact Phone</FL>
             <input placeholder="Phone number" className="premium-input bg-white w-full"
                 value={formData.emergency_contact_phone}
+                 minlength="10"
                 onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_phone: e.target.value }))} />
         </FW>
         <FW className="sm:col-span-2">
@@ -140,7 +153,7 @@ const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, 
     </div>
 );
 
-const LactatingFields = ({ formData, setFormData }) => (
+const LactatingFields = ({ formData, setFormData,healthWorkers }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <FW>
             <FL>Baby's First Name *</FL>
@@ -204,12 +217,18 @@ const LactatingFields = ({ formData, setFormData }) => (
                 value={formData.delivery_date}
                 onChange={(e) => setFormData(prev => ({ ...prev, delivery_date: e.target.value }))} />
         </FW>
-        <FW>
-            <FL>Health Worker ID</FL>
-            <input placeholder="Assigned health worker ID" className="premium-input bg-white w-full"
+      <FW>
+            <FL>Health Worker</FL>
+            <select className="premium-input bg-white w-full cursor-pointer"
                 value={formData.health_worker_id}
-                onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))} />
+                onChange={(e) => setFormData(prev => ({ ...prev, health_worker_id: e.target.value }))}>
+                <option value="">Select...</option>
+                {healthWorkers?.map(hw => (
+                    <option key={hw.id} value={hw.id}>{hw.name}</option>
+                ))}
+            </select>
         </FW>
+        
         <FW>
             <FL>Emergency Contact Name</FL>
             <input placeholder="Full name" className="premium-input bg-white w-full"
@@ -220,6 +239,7 @@ const LactatingFields = ({ formData, setFormData }) => (
             <FL>Emergency Contact Phone</FL>
             <input placeholder="Phone number" className="premium-input bg-white w-full"
                 value={formData.emergency_contact_phone}
+                minlength="10"
                 onChange={(e) => setFormData(prev => ({ ...prev, emergency_contact_phone: e.target.value }))} />
         </FW>
     </div>
@@ -305,7 +325,7 @@ const OfficialFields = ({ formData, setFormData, dlist }) => (
 const UserManagement = () => {
     const dispatch = useDispatch();
 
-    const { userList, userMeta, usersLoading, userActionLoading, userSuccess } = useSelector(s => s.users);
+    const { userList, userMeta, usersLoading, userActionLoading, userSuccess, healthWorkers } = useSelector(s => s.users);
     const { list } = useSelector(s => s.communities);
     const { languageList } = useSelector(s => s.languages);
     const { dlist } = useSelector(s => s.districts);
@@ -348,6 +368,7 @@ const UserManagement = () => {
         dispatch(fetchCommunityList());
         dispatch(fetchLanguageList());
         dispatch(fetchDistrictsList());
+        dispatch(fetchHealthWorkers());
     }, [dispatch]);
 
     useEffect(() => {
@@ -610,7 +631,7 @@ const UserManagement = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                         <FW><FL>First Name *</FL><input required placeholder="First name" className="premium-input w-full" value={formData.first_name} onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))} /></FW>
                                         <FW><FL>Last Name *</FL><input required placeholder="Last name" className="premium-input w-full" value={formData.last_name} onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))} /></FW>
-                                        <FW><FL>Phone Number *</FL><input required placeholder="0241234567" className="premium-input w-full" value={formData.phone_number} onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))} /></FW>
+                                        <FW><FL>Phone Number *</FL><input required placeholder="0241234567" className="premium-input w-full" value={formData.phone_number} onChange={(e) => setFormData(prev => ({ ...prev, phone_number: e.target.value }))} minlength="10" /></FW>
                                         <FW><FL>Date of Birth *</FL><input required type="date" className="premium-input w-full" value={formData.dob} onChange={(e) => setFormData(prev => ({ ...prev, dob: e.target.value }))} /></FW>
                                         <FW><FL>Email Address</FL><input type="email" placeholder="user@example.com" className="premium-input w-full" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} /></FW>
                                         <FW>
@@ -650,10 +671,11 @@ const UserManagement = () => {
                                             addCondition={addCondition}
                                             removeCondition={removeCondition}
                                             updateCondition={updateCondition}
+                                            healthWorkers={healthWorkers}
                                         />
                                     )}
                                     {formData.role === 'lactating_mother' && (
-                                        <LactatingFields formData={formData} setFormData={setFormData} />
+                                        <LactatingFields formData={formData} setFormData={setFormData} healthWorkers={healthWorkers}     />
                                     )}
                                     {formData.role === 'health_worker' && (
                                         <HealthWorkerFields formData={formData} setFormData={setFormData} dlist={dlist} />

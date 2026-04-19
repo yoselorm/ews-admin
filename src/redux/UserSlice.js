@@ -11,6 +11,14 @@ export const fetchUsers = createAsyncThunk('users/fetch', async (params, { rejec
         return rejectWithValue(err.response?.data?.message || 'Failed to fetch users');
     }
 });
+export const fetchHealthWorkers = createAsyncThunk('users/fetchHealthWorkers', async (__, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/v1/admin/health-workers/lookup');
+        return response.data;
+    } catch (err) {
+        return rejectWithValue(err.response?.data?.message || 'Failed to fetch health workers');
+    }
+});
 
 // 2. Creation Thunks (Four distinct endpoints)
 const createUserThunk = (name, url) => createAsyncThunk(`users/create${name}`, async (data, { rejectWithValue }) => {
@@ -58,9 +66,10 @@ const userSlice = createSlice({
     name: 'users',
     initialState: {
         userList: [],
+        healthWorkers:[],
         userMeta: null,
         usersLoading: false,
-        userActionLoading: false, // For all POST/PUT/DELETE actions
+        userActionLoading: false, 
         userSuccess: false,
         userError: null
     },
@@ -84,6 +93,19 @@ const userSlice = createSlice({
                 state.userMeta = action.payload.meta;
             })
             .addCase(fetchUsers.rejected, (state, action) => {
+                state.usersLoading = false;
+                state.userError = action.payload;
+            })
+                // Fetch Health Workers Cases   
+            .addCase(fetchHealthWorkers.pending, (state) => {
+                state.usersLoading = true;
+                state.userError = null;
+            })
+            .addCase(fetchHealthWorkers.fulfilled, (state, action) => {
+                state.usersLoading = false;
+                state.healthWorkers = action.payload.data; 
+            })
+            .addCase(fetchHealthWorkers.rejected, (state, action) => {
                 state.usersLoading = false;
                 state.userError = action.payload;
             })

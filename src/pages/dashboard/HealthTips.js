@@ -11,20 +11,20 @@ import {
 } from 'lucide-react';
 import toast from '../../components/Toast';
 import { useNavigate } from 'react-router-dom';
+import { fetchHealthTipCategories } from '../../redux/HealthTipCategorySlice';
 
 const DEFAULT_FORM = {
     title: '',
     content: '',
     trimester: '1',
-    category: 'General',
+    category_id: '',
     image_url: '',
     is_active: true
 };
 
-const CATEGORIES = ['General', 'Nutrition', 'Exercise', 'Warning Signs', 'Postnatal'];
 
 // ─── Form ──────────────────────────────────────────────────────────────────────
-const HealthTipFormBody = ({ formData, setFormData, imageFile, setImageFile }) => {
+const HealthTipFormBody = ({ formData, setFormData, imageFile, setImageFile,categories }) => {
     const [imagePreview, setImagePreview] = useState(formData.image_url || null);
 
     const handleImageChange = (e) => {
@@ -70,11 +70,15 @@ const HealthTipFormBody = ({ formData, setFormData, imageFile, setImageFile }) =
                 <div>
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Category</label>
                     <select
+                        required
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        value={formData.category_id}
+                        onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                     >
-                        {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        <option value="">Select Category...</option>
+                        {categories?.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -174,6 +178,8 @@ const HealthTips = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { list, meta, loading, actionLoading, success, error } = useSelector((state) => state.healthTips);
+    const { list: categories } = useSelector((state) => state.healthTipCategories);
+
 
     const [modal, setModal] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -184,6 +190,9 @@ const HealthTips = () => {
     useEffect(() => {
         dispatch(fetchAdminHealthTips(filters));
     }, [dispatch, filters]);
+    useEffect(() => {
+        dispatch(fetchHealthTipCategories());
+    }, [dispatch]);
 
     useEffect(() => {
         if (success) {
@@ -250,7 +259,7 @@ const HealthTips = () => {
             title: item.title,
             content: item.content,
             trimester: item.trimester.toString(),
-            category: item.category,
+            category_id: item.category?.id,
             image_url: item.image_url || '',
             is_active: item.is_active,
         });
@@ -349,7 +358,7 @@ const HealthTips = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
-                                        T{item.trimester} • {item.category}
+                                        T{item.trimester} • {item?.category || item.category?.name}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4">
@@ -387,6 +396,7 @@ const HealthTips = () => {
                         formData={formData}
                         setFormData={setFormData}
                         imageFile={imageFile}
+                        categories={categories}
                         setImageFile={setImageFile}
                     />
                     <div className="px-6 pb-6 flex gap-3">

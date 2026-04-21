@@ -291,7 +291,7 @@ const AudioTranslationManagement = () => {
                                                     onChange={(e) => setFormData({ ...formData, translatable_type: e.target.value })}
                                                 >
                                                     <option value="">Select...</option>
-                                                    <option value="threshold">Threshold</option>
+                                                    <option value="weather_threshold">Threshold</option>
                                                     <option value="health_tip">Health Tip</option>
                                                     <option value="precaution">Precaution</option>
                                                     <option value="safety_guide">Safety Guide</option>

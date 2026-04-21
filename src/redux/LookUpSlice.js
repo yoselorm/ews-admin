@@ -6,7 +6,7 @@ export const fetchLookupData = createAsyncThunk(
     async (type, { rejectWithValue }) => {
         try {
             const endpoints = {
-                threshold: '/v1/admin/weather-thresholds/lookup',
+                weather_threshold: '/v1/admin/weather-thresholds/lookup',
                 health_tip: '/v1/admin/health-tips/lookup',
                 precaution: '/v1/admin/precautions/lookup',
                 safety_guide: '/v1/admin/safety-guide/lookup',

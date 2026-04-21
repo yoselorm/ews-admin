@@ -79,53 +79,53 @@ const AudioTranslationManagement = () => {
     }, [filters, dispatch]);
 
     // --- Handlers ---
-   const handleUpload = async (e) => {
-    e.preventDefault();
-    
-    // 1. Validation check with Toast
-    if (!formData.audio_file) {
-        toast.warning('Please provide an audio file either by uploading or recording.');
-        return;
-    }
+    const handleUpload = async (e) => {
+        e.preventDefault();
 
-    const data = new FormData();
-    data.append('translatable_type', formData.translatable_type);
-    data.append('translatable_id', formData.translatable_id);
-    data.append('language_id', formData.language_id);
-    data.append('audio_file', formData.audio_file);
+        // 1. Validation check with Toast
+        if (!formData.audio_file) {
+            toast.warning('Please provide an audio file either by uploading or recording.');
+            return;
+        }
 
-    try {
-        await dispatch(uploadAudioTranslation(data)).unwrap();
+        const data = new FormData();
+        data.append('translatable_type', formData.translatable_type);
+        data.append('translatable_id', formData.translatable_id);
+        data.append('language_id', formData.language_id);
+        data.append('audio_file', formData.audio_file);
 
-        toast.success("Audio translation uploaded successfully!");
+        try {
+            await dispatch(uploadAudioTranslation(data)).unwrap();
 
-        // 3. Cleanup & Close
-        setIsUploadModalOpen(false);
-        setFormData({ 
-            translatable_type: 'alert', 
-            translatable_id: '', 
-            language_id: '', 
-            audio_file: null 
-        });
-        
-    } catch (err) {
-        toast.error(err || "Failed to upload audio translation.");
-    }
-};
+            toast.success("Audio translation uploaded successfully!");
 
-  const confirmDelete = async () => {
-    if (!targetAudio) return;
+            // 3. Cleanup & Close
+            setIsUploadModalOpen(false);
+            setFormData({
+                translatable_type: 'alert',
+                translatable_id: '',
+                language_id: '',
+                audio_file: null
+            });
 
-    try {
-        await dispatch(deleteAudioTranslation(targetAudio.id)).unwrap();
+        } catch (err) {
+            toast.error(err || "Failed to upload audio translation.");
+        }
+    };
 
-        toast.success("Audio translation deleted successfully");
-        
-        setIsDeleteModalOpen(false);
-    } catch (err) {
-        toast.error(err || "Failed to delete the audio translation");
-    }
-};
+    const confirmDelete = async () => {
+        if (!targetAudio) return;
+
+        try {
+            await dispatch(deleteAudioTranslation(targetAudio.id)).unwrap();
+
+            toast.success("Audio translation deleted successfully");
+
+            setIsDeleteModalOpen(false);
+        } catch (err) {
+            toast.error(err || "Failed to delete the audio translation");
+        }
+    };
 
     const togglePlayback = (id, url) => {
         const player = document.getElementById('global-audio-player');
@@ -313,11 +313,11 @@ const AudioTranslationManagement = () => {
                                                         onClick={() => setRecordMode('upload')}
                                                         className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${recordMode === 'upload' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
                                                     >Upload</button>
-                                                    {/* <button 
-        type="button"
-        onClick={() => setRecordMode('record')}
-        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${recordMode === 'record' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
-      >Record</button> */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setRecordMode('record')}
+                                                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${recordMode === 'record' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
+                                                    >Record</button>
                                                 </div>
                                             </div>
 

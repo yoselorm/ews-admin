@@ -9,7 +9,7 @@ export const fetchLookupData = createAsyncThunk(
                 weather_threshold: '/v1/admin/weather-thresholds/lookup',
                 health_tip: '/v1/admin/health-tips/lookup',
                 precaution: '/v1/admin/precautions/lookup',
-                safety_guide: '/v1/admin/safety-guide/lookup',
+                safety_guide: '/v1/admin/safety-guides/lookup',
             };
 
             const response = await api.get(endpoints[type]);
@@ -44,6 +44,7 @@ const lookupSlice = createSlice({
             .addCase(fetchLookupData.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.data = [];
             });
     },
 });

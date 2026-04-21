@@ -357,9 +357,9 @@ const HealthTips = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
-                                        T{item.trimester} • {item?.category || item.category?.name}
-                                    </span>
+                                   <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
+    T{item.trimester} • {item.category?.name ?? item.category ?? '—'}
+</span>
                                 </td>
                                 <td className="px-6 py-4">
                                     {item.is_active ? (

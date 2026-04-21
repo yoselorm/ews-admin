@@ -533,10 +533,11 @@ const handleDelete = async () => {
                   <input
                     type="number"
                     step="any"
+    
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                     placeholder="5.6037"
                     value={formData.latitude || ''}
-                    onChange={(e) => setFormData({ ...formData, latitude: Number(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, latitude:(e.target.value) })}
                   />
                 </div>
                 <div>
@@ -547,7 +548,7 @@ const handleDelete = async () => {
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                     placeholder="-0.1870"
                     value={formData.longitude || ''}
-                    onChange={(e) => setFormData({ ...formData, longitude: Number(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, longitude: (e.target.value) })}
                   />
                 </div>
               </div>

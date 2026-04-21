@@ -5,6 +5,7 @@ import {
     fetchAudioTranslations, uploadAudioTranslation, deleteAudioTranslation,
 } from '../../redux/AudioTranslationSlice';
 import { fetchLanguages } from '../../redux/LanguageSlice';
+import { fetchLookupData, clearLookup } from '../../redux/LookUpSlice';
 import {
     Plus, Search, Trash2, Mic, Play, Pause, X,
     Loader2, AlertTriangle, Music, Globe,
@@ -22,6 +23,7 @@ const AudioTranslationManagement = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [recorder, setRecorder] = useState(null);
     const [recordMode, setRecordMode] = useState('upload');
+    const { data: lookupItems, loading: lookupLoading } = useSelector((state) => state.lookup);
 
     const startRecording = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -78,6 +80,12 @@ const AudioTranslationManagement = () => {
         dispatch(fetchLanguages({ limit: 100 })); // Get all languages for the dropdown
     }, [filters, dispatch]);
 
+    useEffect(() => {
+        if (isUploadModalOpen) {
+            dispatch(fetchLookupData(formData.translatable_type));
+        }
+    }, [formData.translatable_type, isUploadModalOpen, dispatch]);
+
     // --- Handlers ---
     const handleUpload = async (e) => {
         e.preventDefault();
@@ -127,6 +135,14 @@ const AudioTranslationManagement = () => {
         }
     };
 
+    const handleTypeChange = (e) => {
+        const newType = e.target.value;
+        setFormData({
+            ...formData,
+            // translatable_type: newType, 
+            translatable_id: ''
+        });
+    };
     const togglePlayback = (id, url) => {
         const player = document.getElementById('global-audio-player');
         if (playingId === id) {
@@ -182,7 +198,7 @@ const AudioTranslationManagement = () => {
                     onChange={(e) => setFilters({ ...filters, translatable_type: e.target.value, page: 1 })}
                 >
                     <option value="">All Types</option>
-                    <option value="alert">Alerts</option>
+                    <option value="threshold">Threshold</option>
                     <option value="health_tip">Health Tips</option>
                     <option value="precaution">Precautions</option>
                     <option value="safety_guide">Safety Guides</option>
@@ -274,7 +290,8 @@ const AudioTranslationManagement = () => {
                                                     value={formData.translatable_type}
                                                     onChange={(e) => setFormData({ ...formData, translatable_type: e.target.value })}
                                                 >
-                                                    <option value="alert">Alert</option>
+                                                    <option value="">Select...</option>
+                                                    <option value="threshold">Threshold</option>
                                                     <option value="health_tip">Health Tip</option>
                                                     <option value="precaution">Precaution</option>
                                                     <option value="safety_guide">Safety Guide</option>
@@ -294,7 +311,7 @@ const AudioTranslationManagement = () => {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-2">
+                                        {/* <div className="space-y-2">
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Translatable ID</label>
                                             <input
                                                 required placeholder="The UUID or ID of the content"
@@ -302,6 +319,33 @@ const AudioTranslationManagement = () => {
                                                 value={formData.translatable_id}
                                                 onChange={(e) => setFormData({ ...formData, translatable_id: e.target.value })}
                                             />
+                                        </div> */}
+
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                                Translatable ID
+                                            </label>
+                                            <div className="relative">
+                                                <select
+                                                    required
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 appearance-none"
+                                                    value={formData.translatable_id}
+                                                    onChange={(e) => setFormData({ ...formData, translatable_id: e.target.value })}
+                                                    disabled={lookupLoading}
+                                                >
+                                                    <option value="">{lookupLoading ? 'Loading list...' : 'Choose content...'}</option>
+                                                    {lookupItems.map((item) => (
+                                                        <option key={item.id} value={item.id}>
+                                                            {item.title || item.name || item.id}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {lookupLoading && (
+                                                    <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                                                        <Loader2 size={18} className="animate-spin text-purple-600" />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                         <div className="space-y-4">

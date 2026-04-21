@@ -30,7 +30,9 @@ export const createSafetyGuide = createAsyncThunk(
   'safetyGuides/createSafetyGuide',
   async (guideData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/v1/admin/safety-guides', guideData);
+      const response = await api.post('/v1/admin/safety-guides', guideData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Failed to create safety guide');
@@ -43,7 +45,9 @@ export const updateSafetyGuide = createAsyncThunk(
   'safetyGuides/updateSafetyGuide',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/v1/admin/safety-guides/${id}`, data);
+      const response = await api.put(`/v1/admin/safety-guides/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || 'Failed to update safety guide');
@@ -96,7 +100,7 @@ const safetyGuideSlice = createSlice({
       })
       .addCase(fetchSafetyGuides.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload.data;
       })
 
       // Create
@@ -107,7 +111,7 @@ const safetyGuideSlice = createSlice({
       .addCase(createSafetyGuide.fulfilled, (state,action) => {
         state.actionLoading = false;
         state.success = true;
-        state.list.unshift(action.payload); 
+        state.list.unshift(action.payload.data || action.payload); 
       })
       .addCase(createSafetyGuide.rejected, (state, action) => {
         state.actionLoading = false;
@@ -119,9 +123,10 @@ const safetyGuideSlice = createSlice({
         state.actionLoading = true;
         state.success = false;
       })
-      .addCase(updateSafetyGuide.fulfilled, (state) => {
+      .addCase(updateSafetyGuide.fulfilled, (state,action) => {
         state.actionLoading = false;
         state.success = true;
+        state.list = state.list.map(g => g.id === action.payload.data.id ? action.payload.data : g);
       })
       .addCase(updateSafetyGuide.rejected, (state, action) => {
         state.actionLoading = false;

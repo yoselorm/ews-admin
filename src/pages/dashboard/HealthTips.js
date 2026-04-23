@@ -21,14 +21,14 @@ const DEFAULT_FORM = {
     content: '',
     trimester: '1',
     category_id: '',
-    image_url: '',
+    image: '',
     is_active: true
 };
 
 
 // ─── Form ──────────────────────────────────────────────────────────────────────
 const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFile,categories }) => {
-    const [imagePreview, setImagePreview] = useState(formData.image_url || null);
+    const [imagePreview, setImagePreview] = useState(formData.image || null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -40,7 +40,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
     const handleRemoveImage = () => {
         setImageFile(null);
         setImagePreview(null);
-        setFormData({ ...formData, image_url: '' });
+        setFormData({ ...formData, image: '' });
     };
 
     return (
@@ -231,13 +231,13 @@ const HealthTips = () => {
         setImageFile(null);
     };
 
-    // Build FormData — converts boolean to 1/0, avoids duplicate image_url
+    // Build FormData — converts boolean to 1/0, avoids duplicate image
     const buildPayload = () => {
         const body = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
             if (value === null || value === undefined) return;
-            // Skip image_url string if we have a new file
-            if (key === 'image_url' && imageFile) return;
+            // Skip image string if we have a new file
+            if (key === 'image' && imageFile) return;
             // Convert boolean to 1/0 for multipart
             if (typeof value === 'boolean') {
                 body.append(key, value ? '1' : '0');
@@ -246,7 +246,7 @@ const HealthTips = () => {
             body.append(key, value);
         });
         if (imageFile) {
-            body.append('image_url', imageFile);
+            body.append('image', imageFile);
         }
         return body;
     };
@@ -284,7 +284,7 @@ const HealthTips = () => {
             content: item.content,
             trimester: item.trimester.toString(),
             category_id: item.category?.id,
-            image_url: item.image_url || '',
+            image: item.image || '',
             is_active: item.is_active,
         });
         setImageFile(null);
@@ -363,9 +363,9 @@ const HealthTips = () => {
                                 <td className="px-6 py-4 max-w-sm">
                                     <div className="flex items-center gap-3">
                                         {/* Thumbnail if image exists */}
-                                        {item.image_url ? (
+                                        {item.image ? (
                                             <img
-                                                src={item.image_url}
+                                                src={item.image}
                                                 alt={item.title}
                                                 className="w-11 h-11 rounded-xl object-cover border border-slate-100 shrink-0"
                                             />

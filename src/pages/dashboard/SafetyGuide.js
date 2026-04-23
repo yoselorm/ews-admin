@@ -27,12 +27,12 @@ const DEFAULT_FORM = {
     icon_name: 'info',
     sort_order: 0,
     is_active: true,
-    image_url: '',
+    image: '',
 };
 
 // --- Form Component ---
 const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, error, imageFile, setImageFile }) => {
-    const [imagePreview, setImagePreview] = useState(formData.image_url || null);
+    const [imagePreview, setImagePreview] = useState(formData.image || null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -44,7 +44,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
     const handleRemoveImage = () => {
         setImageFile(null);
         setImagePreview(null);
-        setFormData({ ...formData, image_url: '' });
+        setFormData({ ...formData, image: '' });
     };
 
     return (
@@ -271,9 +271,9 @@ const SafetyGuides = () => {
             ...item,
             threshold_id: item.threshold_id || '',
             category_id: item.category?.id || '',
-            image_url: item.image_url || '',
+            image: item.image || '',
         });
-        setImageFile(null); // reset file — preview will show existing image_url
+        setImageFile(null); // reset file — preview will show existing image
         setModal('edit');
     };
 
@@ -283,7 +283,7 @@ const SafetyGuides = () => {
 
         Object.entries(formData).forEach(([key, value]) => {
             if (value === null || value === undefined) return;
-            if (key === 'image_url' && imageFile) return;
+            if (key === 'image' && imageFile) return;
 
             if (typeof value === 'boolean') {
                 body.append(key, value ? '1' : '0');
@@ -294,7 +294,7 @@ const SafetyGuides = () => {
         });
 
         if (imageFile) {
-            body.append('image_url', imageFile);
+            body.append('image', imageFile);
         }
 
         return body;
@@ -391,9 +391,9 @@ const SafetyGuides = () => {
                                 <td className="px-6 py-4">
                                     <div className="flex gap-3 items-center">
                                         {/* Show thumbnail if image exists, else icon */}
-                                        {item.image_url ? (
+                                        {item.image ? (
                                             <img
-                                                src={item.image_url}
+                                                src={item.image}
                                                 alt={item.title}
                                                 className="w-11 h-11 rounded-xl object-cover border border-slate-100 shrink-0"
                                             />

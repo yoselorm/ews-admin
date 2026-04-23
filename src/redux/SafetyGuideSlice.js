@@ -45,7 +45,7 @@ export const updateSafetyGuide = createAsyncThunk(
   'safetyGuides/updateSafetyGuide',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/v1/admin/safety-guides/${id}`, data, {
+      const response = await api.post(`/v1/admin/safety-guides/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;

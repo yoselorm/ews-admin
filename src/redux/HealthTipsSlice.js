@@ -32,7 +32,7 @@ export const updateHealthTip = createAsyncThunk(
     'healthTips/updateHealthTip',
     async ({ id, data }, { rejectWithValue }) => {
         try {
-            const response = await api.put(`/v1/admin/health-tips/${id}`, data, {
+            const response = await api.post(`/v1/admin/health-tips/${id}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             return response.data;

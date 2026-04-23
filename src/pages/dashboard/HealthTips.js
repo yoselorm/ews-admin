@@ -7,11 +7,14 @@ import {
 import Pagination from '../../components/Pagination';
 import {
     Plus, Search, Trash2, Edit3, Loader2, X, CheckCircle2, XCircle, AlertTriangle,
-    Layers, ImagePlus, ImageOff
+    Layers, ImagePlus, ImageOff,
+    Settings,
+    Copy
 } from 'lucide-react';
 import toast from '../../components/Toast';
 import { useNavigate } from 'react-router-dom';
 import { fetchHealthTipCategories } from '../../redux/HealthTipCategorySlice';
+import { copyToClipboard } from '../../utils/clipboard';
 
 const DEFAULT_FORM = {
     title: '',
@@ -24,7 +27,7 @@ const DEFAULT_FORM = {
 
 
 // ─── Form ──────────────────────────────────────────────────────────────────────
-const HealthTipFormBody = ({ formData, setFormData, imageFile, setImageFile,categories }) => {
+const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFile,categories }) => {
     const [imagePreview, setImagePreview] = useState(formData.image_url || null);
 
     const handleImageChange = (e) => {
@@ -43,6 +46,26 @@ const HealthTipFormBody = ({ formData, setFormData, imageFile, setImageFile,cate
     return (
         <div className="p-6 space-y-5">
             <div className="grid grid-cols-2 gap-4">
+                    { modal === "edit" && (
+            <div className="col-span-2">
+                <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Health Tip ID</label>
+                <div className="relative group">
+                    <input
+                        type="text"
+                        readOnly
+                    value={formData.id}
+                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 pr-12 text-sm font-mono text-slate-500 outline-none transition-all cursor-default"
+                />
+                <button
+                    type="button"
+                    onClick={() => copyToClipboard(formData.id, "Health Tip ID")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+                    title="Copy to clipboard"
+                >
+                    <Copy size={16} />
+                </button>
+            </div>
+        </div>)}
                 <div className="col-span-2">
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Tip Title</label>
                     <input
@@ -256,6 +279,7 @@ const HealthTips = () => {
     const openEdit = (item) => {
         setSelectedItem(item);
         setFormData({
+            id: item.id,
             title: item.title,
             content: item.content,
             trimester: item.trimester.toString(),
@@ -373,7 +397,7 @@ const HealthTips = () => {
                                     )}
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-1">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Edit3 size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Settings size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>
@@ -398,6 +422,7 @@ const HealthTips = () => {
                         imageFile={imageFile}
                         categories={categories}
                         setImageFile={setImageFile}
+                        modal={modal}
                     />
                     <div className="px-6 pb-6 flex gap-3">
                         <button onClick={closeModal} className="flex-1 px-4 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">Cancel</button>

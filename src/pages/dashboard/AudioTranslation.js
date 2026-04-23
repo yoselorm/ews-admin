@@ -198,7 +198,7 @@ const AudioTranslationManagement = () => {
                     onChange={(e) => setFilters({ ...filters, translatable_type: e.target.value, page: 1 })}
                 >
                     <option value="">All Types</option>
-                    <option value="threshold">Threshold</option>
+                    <option value="weather_threshold">Threshold</option>
                     <option value="health_tip">Health Tips</option>
                     <option value="precaution">Precautions</option>
                     <option value="safety_guide">Safety Guides</option>

@@ -11,9 +11,12 @@ import Pagination from '../../components/Pagination';
 import {
     Plus, Search, Trash2, Edit3, BookOpen,
     Loader2, X, ShieldAlert, CheckCircle, XCircle, Tag, Layers,
-    ImagePlus, ImageOff
+    ImagePlus, ImageOff,
+    Settings,
+    Copy
 } from 'lucide-react';
 import toast from '../../components/Toast';
+import { copyToClipboard } from '../../utils/clipboard';
 
 const DEFAULT_FORM = {
     threshold_id: '',
@@ -28,7 +31,7 @@ const DEFAULT_FORM = {
 };
 
 // --- Form Component ---
-const GuideFormBody = ({ formData, setFormData, thresholds, categories, error, imageFile, setImageFile }) => {
+const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, error, imageFile, setImageFile }) => {
     const [imagePreview, setImagePreview] = useState(formData.image_url || null);
 
     const handleImageChange = (e) => {
@@ -51,6 +54,28 @@ const GuideFormBody = ({ formData, setFormData, thresholds, categories, error, i
                     <ShieldAlert size={16} />{error}
                 </div>
             )}
+
+            {modal === "edit" && (
+                <div className="col-span-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Safety Guide ID</label>
+                    <div className="relative group">
+                        <input
+                            type="text"
+                            readOnly 
+                            value={formData.id}
+                            className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 pr-12 text-sm font-mono text-slate-500 outline-none transition-all cursor-default"
+                            placeholder="e.g. THRESHOLD_001"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => copyToClipboard(formData.id, "Safety Guide ID")}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+                            title="Copy to clipboard"
+                        >
+                            <Copy size={16} />
+                        </button>
+                    </div>
+                </div>)}
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
@@ -253,27 +278,27 @@ const SafetyGuides = () => {
     };
 
     // Build FormData payload — appends image file if user picked one
- const buildPayload = () => {
-    const body = new FormData();
-    
-    Object.entries(formData).forEach(([key, value]) => {
-        if (value === null || value === undefined) return;
-                if (key === 'image_url' && imageFile) return;
-        
-        if (typeof value === 'boolean') {
-            body.append(key, value ? '1' : '0');
-            return;
+    const buildPayload = () => {
+        const body = new FormData();
+
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value === null || value === undefined) return;
+            if (key === 'image_url' && imageFile) return;
+
+            if (typeof value === 'boolean') {
+                body.append(key, value ? '1' : '0');
+                return;
+            }
+
+            body.append(key, value);
+        });
+
+        if (imageFile) {
+            body.append('image_url', imageFile);
         }
-        
-        body.append(key, value);
-    });
 
-    if (imageFile) {
-        body.append('image_url', imageFile);
-    }
-
-    return body;
-};
+        return body;
+    };
 
     const handleDelete = async () => {
         if (!selectedItem) return;
@@ -396,7 +421,7 @@ const SafetyGuides = () => {
                                     }
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-1">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Edit3 size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Settings size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>
@@ -427,6 +452,7 @@ const SafetyGuides = () => {
             {modal === 'edit' && (
                 <ModalShell title="Update Safety Guide" onClose={closeModal}>
                     <GuideFormBody
+                        modal="edit"
                         formData={formData} setFormData={setFormData}
                         thresholds={thresholds} categories={categories}
                         error={error} imageFile={imageFile} setImageFile={setImageFile}

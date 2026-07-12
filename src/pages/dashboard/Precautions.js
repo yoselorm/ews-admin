@@ -17,16 +17,28 @@ import { copyToClipboard } from '../../utils/clipboard';
 const DEFAULT_FORM = {
     threshold_id: '',
     target_role: 'pregnant_woman',
+    tier: '',
+    send_number: '',
     title: '',
-    body: ''
+    body: '',
+    sms_body: ''
 };
 
 const TARGET_ROLES = [
     { value: 'pregnant_woman', label: 'Pregnant Woman' },
     { value: 'lactating_mother', label: 'Lactating Mother' },
     { value: 'health_worker', label: 'Health Worker' },
+    { value: 'assembly_official', label: 'Assembly Official' },
     { value: 'all', label: 'All Users' },
 ];
+
+const TIERS = [
+    { value: 'high', label: 'High' },
+    { value: 'moderate', label: 'Moderate' },
+    { value: 'low', label: 'Low' },
+];
+
+const SEND_NUMBERS = [1, 2, 3, 4];
 
 const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error }) => (
     <div className="p-6 space-y-5">
@@ -99,16 +111,56 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
                     ))}
                 </select>
             </div>
+
+            <div>
+                <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Tier</label>
+                <select
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    value={formData.tier}
+                    onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
+                >
+                    <option value="">All Tiers (fallback)</option>
+                    {TIERS.map(tier => (
+                        <option key={tier.value} value={tier.value}>{tier.label}</option>
+                    ))}
+                </select>
+            </div>
+
+            <div>
+                <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Send Number</label>
+                <select
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    value={formData.send_number}
+                    onChange={(e) => setFormData({ ...formData, send_number: e.target.value === '' ? '' : Number(e.target.value) })}
+                >
+                    <option value="">All sends</option>
+                    {SEND_NUMBERS.map(n => (
+                        <option key={n} value={n}>{n}</option>
+                    ))}
+                </select>
+            </div>
         </div>
 
         <div>
-            <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Message Body</label>
+            <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Push Notification Body</label>
             <textarea
                 required rows="4"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                 placeholder="Provide clear health advice..."
                 value={formData.body}
                 onChange={(e) => setFormData({ ...formData, body: e.target.value })}
+            />
+        </div>
+
+        <div>
+            <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">SMS Body</label>
+            <textarea
+                rows="3"
+                maxLength={160}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                placeholder="Optional — falls back to Push Notification Body if left blank (≤160 chars)"
+                value={formData.sms_body}
+                onChange={(e) => setFormData({ ...formData, sms_body: e.target.value })}
             />
         </div>
     </div>
@@ -143,7 +195,7 @@ const Precautions = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [formData, setFormData] = useState(DEFAULT_FORM);
     const [currentPage, setCurrentPage] = useState(1);
-    const [filters, setFilters] = useState({ page: 1, search: '', target_role: '', sort: '-created_at' });
+    const [filters, setFilters] = useState({ page: 1, search: '', target_role: '', tier: '', send_number: '', sort: '-created_at' });
 
     useEffect(() => {
         dispatch(fetchPrecautions(filters));
@@ -220,8 +272,11 @@ const Precautions = () => {
             id: item.id,
             threshold_id: item.threshold_id || '',
             target_role: item.target_role,
+            tier: item.tier || '',
+            send_number: item.send_number ?? '',
             title: item.title,
-            body: item.body
+            body: item.body,
+            sms_body: item.sms_body || ''
         });
         setModal('edit');
     };
@@ -273,6 +328,20 @@ const Precautions = () => {
                     <option value="">All Target Roles</option>
                     {TARGET_ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
                 </select>
+                <select
+                    className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium outline-none"
+                    onChange={(e) => setFilters({ ...filters, tier: e.target.value, page: 1 })}
+                >
+                    <option value="">All Tiers</option>
+                    {TIERS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+                <select
+                    className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium outline-none"
+                    onChange={(e) => setFilters({ ...filters, send_number: e.target.value, page: 1 })}
+                >
+                    <option value="">All Send #s</option>
+                    {SEND_NUMBERS.map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
             </div>
 
             {/* Table */}
@@ -282,13 +351,15 @@ const Precautions = () => {
                         <tr>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Message Content</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Target</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Tier</th>
+                            <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Send #</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Threshold</th>
                             <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
+                            <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
                         ) : list.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
                                 <td className="px-6 py-4 max-w-sm">
@@ -299,6 +370,18 @@ const Precautions = () => {
                                     <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
                                         {item.target_role.replace('_', ' ')}
                                     </span>
+                                </td>
+                                <td className="px-6 py-4">
+                                    {item.tier ? (
+                                        <span className="px-3 py-1 bg-slate-50 text-slate-600 rounded-full text-[10px] font-bold uppercase border border-slate-200">
+                                            {item.tier}
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs text-slate-400">All</span>
+                                    )}
+                                </td>
+                                <td className="px-6 py-4 text-sm text-slate-500 font-medium">
+                                    {item.send_number ?? 'All'}
                                 </td>
                                 <td className="px-6 py-4 text-sm text-slate-500 font-medium">
                                     {item.threshold?.name || '---'}

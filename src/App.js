@@ -19,6 +19,7 @@ import AudioTranslationManagement from './pages/dashboard/AudioTranslation';
 import AdminManagement from './pages/dashboard/AdminManagement';
 import HealthTips from './pages/dashboard/HealthTips';
 import HealthTipCategories from './pages/dashboard/HealthTipCategories';
+import SendMatrix from './pages/dashboard/SendMatrix';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="languages" element={<LanguageManagement />}  />
         <Route path="audio-translations" element={<AudioTranslationManagement />}  />
         <Route path="admin" element={<AdminManagement />}  />
+        <Route path="thresholds/send-matrix/:threshold_id" element={<SendMatrix />}  />
 
       </Route>
 

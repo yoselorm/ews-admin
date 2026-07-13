@@ -17,6 +17,7 @@ import adminReducer from './redux/AdminSlice';
 import healthTipsReducer from './redux/HealthTipsSlice';
 import lookupReducer from './redux/LookUpSlice';
 import healthTipCategoryReducer from './redux/HealthTipCategorySlice';
+import sendMatrixReducer from './redux/SendMatrixSlice';
 
 const store = configureStore({
     reducer: {
@@ -37,7 +38,8 @@ const store = configureStore({
         admins: adminReducer,
         healthTips: healthTipsReducer,
         lookup: lookupReducer,
-        healthTipCategories: healthTipCategoryReducer
+        healthTipCategories: healthTipCategoryReducer,
+        sendMatrix: sendMatrixReducer,
     }
 })
 

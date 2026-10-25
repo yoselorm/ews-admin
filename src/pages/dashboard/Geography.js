@@ -27,7 +27,7 @@ const Column = ({ icon: Icon, title, count, onAdd, showAdd, loading, empty, empt
   <div className="flex flex-col bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden h-full">
     {/* Header */}
     <div className="shrink-0 flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
-      <div className="p-2 rounded-xl bg-purple-50 text-purple-600">
+      <div className="p-2 rounded-xl bg-brand-50 text-brand-600">
         <Icon size={16} />
       </div>
       <div className="min-w-0">
@@ -37,7 +37,7 @@ const Column = ({ icon: Icon, title, count, onAdd, showAdd, loading, empty, empt
       {showAdd && (
         <button
           onClick={onAdd}
-          className="ml-1 shrink-0 p-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors shadow-sm shadow-purple-200"
+          className="ml-1 shrink-0 p-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-colors shadow-sm shadow-brand-200"
         >
           <Plus size={14} />
         </button>
@@ -48,7 +48,7 @@ const Column = ({ icon: Icon, title, count, onAdd, showAdd, loading, empty, empt
     <div className="flex-1 overflow-y-auto">
       {loading ? (
         <div className="flex items-center justify-center h-full py-16">
-          <Loader2 className="animate-spin text-purple-500" size={24} />
+          <Loader2 className="animate-spin text-brand-500" size={24} />
         </div>
       ) : empty ? (
         <div className="flex flex-col items-center justify-center h-full py-16 text-center px-6">
@@ -77,18 +77,18 @@ const RegionRow = ({ item, active, onClick, onEdit, onDelete }) => (
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all ${
         active
-          ? 'bg-purple-600 text-white shadow-md shadow-purple-100'
+          ? 'bg-brand-600 text-white shadow-md shadow-brand-100'
           : 'hover:bg-slate-50 text-slate-700'
       }`}
     >
       <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black ${
-        active ? 'bg-purple-500 text-white' : 'bg-slate-100 text-slate-500'
+        active ? 'bg-brand-500 text-white' : 'bg-slate-100 text-slate-500'
       }`}>
         {item.code?.slice(0, 2) || item.name?.slice(0, 2)}
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-bold text-sm truncate leading-tight">{item.name}</p>
-        <p className={`text-[10px] font-mono uppercase tracking-wider ${active ? 'text-purple-200' : 'text-slate-400'}`}>
+        <p className={`text-[10px] font-mono uppercase tracking-wider ${active ? 'text-brand-200' : 'text-slate-400'}`}>
           {item.code}
         </p>
       </div>
@@ -98,13 +98,13 @@ const RegionRow = ({ item, active, onClick, onEdit, onDelete }) => (
     <div className={`absolute right-7 top-1/2 -translate-y-1/2 flex gap-0.5 transition-opacity ${active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
       <button
         onClick={(e) => { e.stopPropagation(); onEdit(); }}
-        className={`p-1.5 rounded-md transition-colors ${active ? 'hover:bg-purple-500 text-white' : 'hover:bg-white hover:shadow-sm text-slate-400'}`}
+        className={`p-1.5 rounded-md transition-colors ${active ? 'hover:bg-brand-500 text-white' : 'hover:bg-white hover:shadow-sm text-slate-400'}`}
       >
         <Edit3 size={12} />
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); onDelete(); }}
-        className={`p-1.5 rounded-md transition-colors ${active ? 'hover:bg-purple-500 text-white' : 'hover:bg-white hover:shadow-sm text-slate-400 hover:text-red-500'}`}
+        className={`p-1.5 rounded-md transition-colors ${active ? 'hover:bg-brand-500 text-white' : 'hover:bg-white hover:shadow-sm text-slate-400 hover:text-red-500'}`}
       >
         <Trash2 size={12} />
       </button>
@@ -130,15 +130,15 @@ const DistrictRow = ({ item, active, onClick, onEdit, onDelete }) => (
       <ChevronRight size={14} className={`shrink-0 ${active ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}`} />
     </button>
     <div className="absolute right-7 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-      <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className="p-1.5 bg-white shadow-sm rounded-md text-slate-400 hover:text-purple-600 transition-colors"><Edit3 size={12} /></button>
+      <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className="p-1.5 bg-white shadow-sm rounded-md text-slate-400 hover:text-brand-600 transition-colors"><Edit3 size={12} /></button>
       <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-1.5 bg-white shadow-sm rounded-md text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={12} /></button>
     </div>
   </div>
 );
 
 const CommunityCard = ({ item, onEdit, onDelete }) => (
-  <div className="group flex items-start gap-3 p-3.5 rounded-xl border border-slate-100 hover:border-purple-200 hover:shadow-sm bg-white transition-all">
-    <div className="shrink-0 p-2 bg-purple-50 rounded-lg text-purple-500 mt-0.5">
+  <div className="group flex items-start gap-3 p-3.5 rounded-xl border border-slate-100 hover:border-brand-200 hover:shadow-sm bg-white transition-all">
+    <div className="shrink-0 p-2 bg-brand-50 rounded-lg text-brand-500 mt-0.5">
       <Home size={14} />
     </div>
     <div className="flex-1 min-w-0">
@@ -159,7 +159,7 @@ const CommunityCard = ({ item, onEdit, onDelete }) => (
       )}
     </div>
     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-      <button onClick={onEdit} className="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"><Edit3 size={14} /></button>
+      <button onClick={onEdit} className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"><Edit3 size={14} /></button>
       <button onClick={onDelete} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
     </div>
   </div>
@@ -330,11 +330,11 @@ const handleDelete = async () => {
 
   const MobileBreadcrumb = () => (
     <div className="flex items-center gap-2 text-xs font-bold text-slate-500 lg:hidden bg-white rounded-xl px-4 py-2.5 border border-slate-100 shadow-sm">
-      <button onClick={() => setMobileView('regions')} className={mobileView === 'regions' ? 'text-purple-600' : 'hover:text-slate-800'}>Regions</button>
+      <button onClick={() => setMobileView('regions')} className={mobileView === 'regions' ? 'text-brand-600' : 'hover:text-slate-800'}>Regions</button>
       {activeRegion && (
         <>
           <ChevronRight size={12} className="text-slate-300" />
-          <button onClick={() => setMobileView('districts')} className={mobileView === 'districts' ? 'text-purple-600' : 'hover:text-slate-800'}>
+          <button onClick={() => setMobileView('districts')} className={mobileView === 'districts' ? 'text-brand-600' : 'hover:text-slate-800'}>
             {activeRegion.name}
           </button>
         </>
@@ -342,7 +342,7 @@ const handleDelete = async () => {
       {activeDistrict && (
         <>
           <ChevronRight size={12} className="text-slate-300" />
-          <button onClick={() => setMobileView('communities')} className={mobileView === 'communities' ? 'text-purple-600' : 'hover:text-slate-800'}>
+          <button onClick={() => setMobileView('communities')} className={mobileView === 'communities' ? 'text-brand-600' : 'hover:text-slate-800'}>
             {activeDistrict.name}
           </button>
         </>
@@ -369,7 +369,7 @@ const handleDelete = async () => {
             if (mobileView === 'communities') setMobileView('districts');
             else setMobileView('regions');
           }}
-          className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-purple-600 transition-colors lg:hidden"
+          className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-brand-600 transition-colors lg:hidden"
         >
           <ArrowLeft size={16} /> Back
         </button>
@@ -505,7 +505,7 @@ const handleDelete = async () => {
             <div>
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Name</label>
               <input
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-300 transition-all"
                 placeholder={`${typeLabel[modalState.type]} name`}
                 value={formData.name || ''}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -517,7 +517,7 @@ const handleDelete = async () => {
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Code</label>
                 <input
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-300 transition-all"
                   placeholder="e.g. GH-AS"
                   value={formData.code || ''}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
@@ -534,7 +534,7 @@ const handleDelete = async () => {
                     type="number"
                     step="any"
     
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     placeholder="5.6037"
                     value={formData.latitude || ''}
                     onChange={(e) => setFormData({ ...formData, latitude:(e.target.value) })}
@@ -545,7 +545,7 @@ const handleDelete = async () => {
                   <input
                     type="number"
                     step="any"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     placeholder="-0.1870"
                     value={formData.longitude || ''}
                     onChange={(e) => setFormData({ ...formData, longitude: (e.target.value) })}
@@ -563,7 +563,7 @@ const handleDelete = async () => {
             <button
               onClick={handleSubmit}
               disabled={actionLoading}
-              className="flex-1 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              className="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {actionLoading ? <Loader2 size={16} className="animate-spin" /> : modalState.mode === 'add' ? 'Create' : 'Save Changes'}
             </button>

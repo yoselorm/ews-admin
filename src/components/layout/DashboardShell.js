@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAdmin } from '../../redux/AuthSlice';
 import toast from '../Toast';
+import logo from '../../assets/logo.png';
 
 const DashboardShell = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -60,16 +61,14 @@ const handleLogout = async () => {
                     isSidebarOpen ? 'w-64' : 'w-20'
                 }`}
             >
-                <div className="p-6 flex items-center gap-3">
-                    <div className="bg-purple-600 p-2 rounded-xl">
-                        <ShieldCheck size={24} color="white" />
-                    </div>
+                <div className="p-5 flex items-center gap-3">
+                    <img src={logo} alt="EWS logo" className="w-10 h-10 shrink-0" />
                     {isSidebarOpen && (
-                        <span className="text-xl font-bold text-slate-900 truncate">EWSAdmin</span>
+                        <span className="text-xl font-bold text-brand-700 truncate">EWSAdmin</span>
                     )}
                 </div>
 
-                <nav className="flex-1 px-4 mt-4 space-y-2 overflow-y-auto custom-scrollbar">
+                <nav className="flex-1 px-4 mt-2 space-y-1 overflow-y-auto custom-scrollbar">
                     {menuItems.map((item) => {
                         const isActive = location.pathname === item.path;
                         const Icon = item.icon;
@@ -79,16 +78,16 @@ const handleLogout = async () => {
                                 to={item.path}
                                 className={`flex items-center p-3 rounded-xl transition-all group ${
                                     isActive
-                                        ? 'bg-purple-50 text-purple-600'
+                                        ? 'bg-brand-50 text-brand-600'
                                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                 }`}
                             >
-                                <Icon size={22} className={isActive ? 'text-purple-600' : 'text-slate-400 group-hover:text-slate-900'} />
+                                <Icon size={22} className={isActive ? 'text-brand-600' : 'text-slate-400 group-hover:text-slate-900'} />
                                 {isSidebarOpen && (
                                     <span className="ml-3 font-semibold text-sm">{item.name}</span>
                                 )}
                                 {isActive && isSidebarOpen && (
-                                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-purple-600" />
+                                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-600" />
                                 )}
                             </Link>
                         );
@@ -118,7 +117,7 @@ const handleLogout = async () => {
     
             <main className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
                 
-                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 flex-shrink-0">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className="p-2 hover:bg-slate-50 rounded-lg text-slate-500"
@@ -130,14 +129,14 @@ const handleLogout = async () => {
                             <p className="text-sm font-bold text-slate-900">{admin?.first_name} {admin?.last_name}</p>
                             <p className="text-xs text-slate-400 capitalize">{admin?.roles?.[0] || 'Administrator'}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-purple-100 border border-purple-200 items-center justify-center flex">
-                            <span className="text-purple-700 font-bold">{admin?.first_name?.[0]}</span>
+                        <div className="w-10 h-10 rounded-full bg-brand-100 border border-brand-200 items-center justify-center flex">
+                            <span className="text-brand-700 font-bold">{admin?.first_name?.[0]}</span>
                         </div>
                     </div>
                 </header>
 
                 {/* FIX 4: Only the Outlet container is allowed to scroll */}
-                <div className="flex-1 overflow-y-auto p-8 bg-slate-50">
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
                     <div className="max-w-7xl mx-auto">
                         <Outlet />
                     </div>

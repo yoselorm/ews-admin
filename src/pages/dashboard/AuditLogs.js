@@ -36,7 +36,7 @@ const AuditLogs = () => {
           <input
             type="text"
             placeholder="Search by action or user..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 transition-all"
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
@@ -59,7 +59,7 @@ const AuditLogs = () => {
               <tr key={log.id} className="hover:bg-slate-50/30 transition-all group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-50 rounded-lg text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                    <div className="p-2 bg-brand-50 rounded-lg text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-all">
                       <Shield size={16} />
                     </div>
                     <span className="font-bold text-slate-700 capitalize">{log.action}</span>

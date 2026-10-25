@@ -156,27 +156,19 @@ const AudioTranslationManagement = () => {
     };
 
     return (
-        <div className="bg-[#F9FAFB] min-h-screen">
+        <div>
             <audio id="global-audio-player" onEnded={() => setPlayingId(null)} className="hidden" />
 
             {/* Header */}
-            <div className="flex justify-between items-center mb-12">
-                <div className="flex items-center gap-5">
-                    <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
-                        <Mic className="text-purple-600" size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Audio Vault</h1>
-                        <div className="flex items-center gap-2 mt-1">
-                            <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Voice Translation Management</p>
-                        </div>
-                    </div>
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">Audio Vault</h1>
+                  <p className="text-slate-500 text-sm">Manage voice translations for alerts and guidance.</p>
                 </div>
 
                 <button
                     onClick={() => setIsUploadModalOpen(true)}
-                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                    className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
                 >
                     <Plus size={20} strokeWidth={3} />
                     Upload Translation
@@ -184,17 +176,17 @@ const AudioTranslationManagement = () => {
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-8 flex items-center gap-4">
+            <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-6 flex items-center gap-4">
                 <div className="flex-1 relative group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                     <input
                         type="text" placeholder="Search by ID..."
-                        className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-purple-500/5 transition-all"
+                        className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/5 transition-all"
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />
                 </div>
                 <select
-                    className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
+                    className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all"
                     onChange={(e) => setFilters({ ...filters, translatable_type: e.target.value, page: 1 })}
                 >
                     <option value="">All Types</option>
@@ -218,7 +210,7 @@ const AudioTranslationManagement = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={40} /></td></tr>
+                            <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" size={40} /></td></tr>
                         ) : audioTranslations.map((audio) => (
                             <tr key={audio.id} className="group hover:bg-slate-50/50 transition-colors">
                                 <td className="px-10 py-7">
@@ -241,7 +233,7 @@ const AudioTranslationManagement = () => {
                                 <td className="px-10 py-7">
                                     <button
                                         onClick={() => togglePlayback(audio.id, audio.audio_url)}
-                                        className={`flex items-center gap-3 px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all ${playingId === audio.id ? 'bg-purple-600 text-white shadow-lg shadow-purple-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                        className={`flex items-center gap-3 px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest transition-all ${playingId === audio.id ? 'bg-brand-600 text-white shadow-lg shadow-brand-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                                     >
                                         {playingId === audio.id ? <Pause size={14} fill="white" /> : <Play size={14} fill="currentColor" />}
                                         {playingId === audio.id ? 'Playing...' : `Listen (${audio.duration_seconds}s)`}
@@ -286,7 +278,7 @@ const AudioTranslationManagement = () => {
                                             <div className="space-y-2">
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
                                                 <select
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500"
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-brand-500"
                                                     value={formData.translatable_type}
                                                     onChange={(e) => setFormData({ ...formData, translatable_type: e.target.value })}
                                                 >
@@ -301,7 +293,7 @@ const AudioTranslationManagement = () => {
                                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Language</label>
                                                 <select
                                                     required
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500"
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-brand-500"
                                                     value={formData.language_id}
                                                     onChange={(e) => setFormData({ ...formData, language_id: e.target.value })}
                                                 >
@@ -315,7 +307,7 @@ const AudioTranslationManagement = () => {
                                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Translatable ID</label>
                                             <input
                                                 required placeholder="The UUID or ID of the content"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-brand-500"
                                                 value={formData.translatable_id}
                                                 onChange={(e) => setFormData({ ...formData, translatable_id: e.target.value })}
                                             />
@@ -328,7 +320,7 @@ const AudioTranslationManagement = () => {
                                             <div className="relative">
                                                 <select
                                                     required
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-purple-500 appearance-none"
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-5 font-bold text-slate-800 outline-none focus:border-brand-500 appearance-none"
                                                     value={formData.translatable_id}
                                                     onChange={(e) => setFormData({ ...formData, translatable_id: e.target.value })}
                                                     disabled={lookupLoading}
@@ -342,7 +334,7 @@ const AudioTranslationManagement = () => {
                                                 </select>
                                                 {lookupLoading && (
                                                     <div className="absolute right-5 top-1/2 -translate-y-1/2">
-                                                        <Loader2 size={18} className="animate-spin text-purple-600" />
+                                                        <Loader2 size={18} className="animate-spin text-brand-600" />
                                                     </div>
                                                 )}
                                             </div>
@@ -373,7 +365,7 @@ const AudioTranslationManagement = () => {
                                                         className="w-full opacity-0 absolute inset-0 cursor-pointer z-10"
                                                         onChange={(e) => setFormData({ ...formData, audio_file: e.target.files[0] })}
                                                     />
-                                                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[20px] p-10 text-center group-hover:bg-slate-100 group-hover:border-purple-200 transition-all">
+                                                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[20px] p-10 text-center group-hover:bg-slate-100 group-hover:border-brand-200 transition-all">
                                                         <Music className="mx-auto text-slate-300 mb-2" size={32} />
                                                         <p className="text-xs font-black text-slate-500 uppercase tracking-widest">
                                                             {formData.audio_file ? formData.audio_file.name : 'Click to Browse File'}
@@ -412,9 +404,9 @@ const AudioTranslationManagement = () => {
                                                             )}
                                                             <button
                                                                 type="button" onClick={startRecording}
-                                                                className="bg-white border border-slate-200 text-slate-900 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm hover:border-purple-300 transition-all flex items-center gap-2"
+                                                                className="bg-white border border-slate-200 text-slate-900 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm hover:border-brand-300 transition-all flex items-center gap-2"
                                                             >
-                                                                <Mic className="text-purple-600" size={18} /> Start New Recording
+                                                                <Mic className="text-brand-600" size={18} /> Start New Recording
                                                             </button>
                                                         </div>
                                                     )}

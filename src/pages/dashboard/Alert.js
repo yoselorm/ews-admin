@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fetchAdminAlerts, resolveAlert, deleteAlert } from '../../redux/AlertSlice';
 import { 
   AlertTriangle, CheckCircle2, Trash2, Filter, 
-  Clock, MapPin, Activity, Loader2, ShieldCheck, Map
+  Clock, MapPin, Loader2, ShieldCheck, Map
 } from 'lucide-react';
 import moment from 'moment';
 
@@ -71,17 +71,12 @@ const handleConfirmDelete = async () => {
   };
 
   return (
-    <div className="bg-[#F9FAFB] min-h-screen">
+    <div>
       {/* Header */}
-      <div className="flex justify-between items-end mb-12">
-        <div className="flex items-center gap-5">
-          <div className="bg-white p-4 rounded-[28px] shadow-sm border border-slate-100">
-            <Activity className="text-purple-600" size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Climate Alerts</h1>
-            <p className="text-slate-400 font-bold text-xs uppercase tracking-[3px] mt-1">Real-time Emergency Monitoring</p>
-          </div>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Climate Alerts</h1>
+          <p className="text-slate-500 text-sm">Monitor and resolve real-time emergency alerts.</p>
         </div>
         
         <div className="bg-white px-6 py-4 rounded-2xl border border-slate-100 flex items-center gap-3 shadow-sm">
@@ -91,7 +86,7 @@ const handleConfirmDelete = async () => {
       </div>
 
       {/* Glassmorphism Filters */}
-      <div className="bg-white/70 backdrop-blur-xl p-5 rounded-[32px] border border-white shadow-sm mb-8 flex flex-wrap gap-6 items-center">
+      <div className="bg-white/70 backdrop-blur-xl p-5 rounded-[32px] border border-white shadow-sm mb-6 flex flex-wrap gap-6 items-center">
         <div className="flex items-center gap-3 border-r border-slate-100 pr-6">
           <Filter size={20} className="text-slate-400" />
           <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Global Triage</span>
@@ -100,7 +95,7 @@ const handleConfirmDelete = async () => {
         {/* NEW: Community Filter Dropdown */}
         <div className="relative">
            <select 
-            className="bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all appearance-none"
+            className="bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all appearance-none"
             value={filters.community_id}
             onChange={(e) => setFilters({...filters, community_id: e.target.value, page: 1})}
           >
@@ -115,7 +110,7 @@ const handleConfirmDelete = async () => {
         </div>
 
         <select 
-          className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
+          className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all"
           onChange={(e) => setFilters({...filters, risk_level: e.target.value, page: 1})}
         >
           <option value="">All Severities</option>
@@ -125,7 +120,7 @@ const handleConfirmDelete = async () => {
         </select>
 
         <select 
-          className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
+          className="bg-slate-50 border border-slate-100 rounded-2xl px-6 py-3.5 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all"
           onChange={(e) => setFilters({...filters, is_resolved: e.target.value, page: 1})}
         >
           <option value="">All Statuses</option>
@@ -148,7 +143,7 @@ const handleConfirmDelete = async () => {
           </thead>
           <tbody className="divide-y divide-slate-50">
             {loading ? (
-              <tr><td colSpan="5" className="py-40 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={40} /></td></tr>
+              <tr><td colSpan="5" className="py-40 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" size={40} /></td></tr>
             ) : alerts.map((alert) => (
               <tr key={alert.id} className="group hover:bg-slate-50/50 transition-all">
                 <td className="px-10 py-8">
@@ -236,7 +231,7 @@ const handleConfirmDelete = async () => {
                 <div className="flex flex-col gap-4">
                   <button 
                     onClick={handleConfirmResolve} disabled={actionLoading}
-                    className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
+                    className="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
                   >
                     {actionLoading ? <Loader2 className="animate-spin" size={24} /> : 'Confirm Resolution'}
                   </button>

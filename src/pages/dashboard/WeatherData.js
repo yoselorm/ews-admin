@@ -34,17 +34,12 @@ const WeatherData = () => {
   };
 
   return (
-    <div className=" bg-[#FBFBFB] min-h-screen">
+    <div>
       {/* Header */}
-      <div className="flex justify-between items-center mb-10">
-        <div className="flex items-center gap-5">
-          <div className="bg-slate-900 p-4 rounded-[24px] shadow-2xl shadow-slate-200 text-white">
-            <CloudSun size={32} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Weather Analytics</h1>
-            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[3px]">Environmental Monitoring</p>
-          </div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Weather Analytics</h1>
+          <p className="text-slate-500 text-sm">Review environmental readings by community.</p>
         </div>
         {/* <button className="bg-white border-2 border-slate-100 text-slate-900 px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
           <Download size={20} strokeWidth={3}/> Export Dataset
@@ -52,12 +47,12 @@ const WeatherData = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-[32px] border border-slate-100 shadow-sm mb-8 flex flex-wrap items-center gap-4">
+      <div className="bg-white p-4 rounded-[32px] border border-slate-100 shadow-sm mb-6 flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-[300px] relative group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-purple-500 transition-colors" size={20} />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-500 transition-colors" size={20} />
           <input 
             type="text" placeholder="Search by community or region..."
-            className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-purple-500/5 transition-all"
+            className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/5 transition-all"
             onChange={(e) => setFilters({...filters, search: e.target.value, page: 1})}
           />
         </div>
@@ -94,7 +89,7 @@ const WeatherData = () => {
                 <tr key={item.id} className="group hover:bg-slate-50/50 transition-all">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-900 shadow-sm group-hover:border-purple-200 transition-all">
+                      <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-900 shadow-sm group-hover:border-brand-200 transition-all">
                         <MapPin size={20} />
                       </div>
                       <div>
@@ -126,7 +121,7 @@ const WeatherData = () => {
                   <td className="px-10 py-6 text-right">
                     <button 
                       onClick={() => setSelectedEntry(item)}
-                      className="p-3 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-purple-600 hover:border-purple-200 transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                      className="p-3 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm opacity-0 group-hover:opacity-100"
                     >
                       <Eye size={18} />
                     </button>
@@ -180,7 +175,7 @@ const WeatherData = () => {
 
               <div className="mt-8 p-6 border-2 border-dashed border-slate-100 rounded-[24px] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Activity size={20} className="text-purple-500"/>
+                  <Activity size={20} className="text-brand-500"/>
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Data Fetched At</span>
                 </div>
                 <span className="text-xs font-black text-slate-800">{new Date(selectedEntry.fetched_at).toLocaleString()}</span>

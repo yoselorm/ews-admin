@@ -98,7 +98,7 @@ const HealthTipCategories = () => {
                     </div>
                 </div>
 
-                <button onClick={() => setModal('add')} className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 transition-all">
+                <button onClick={() => setModal('add')} className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-brand-200 hover:bg-brand-700 transition-all">
                     <Plus size={20} /> Add Category
                 </button>
             </div>
@@ -115,7 +115,7 @@ const HealthTipCategories = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
+                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" /></td></tr>
                         ) : list?.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
                                 <td className="px-6 py-4 font-bold text-slate-800">{item.name}</td>
@@ -127,7 +127,7 @@ const HealthTipCategories = () => {
                                     }
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-2">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Edit3 size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"><Edit3 size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>
@@ -143,7 +143,7 @@ const HealthTipCategories = () => {
                         <div>
                             <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Category Name</label>
                             <input
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500"
                                 value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 placeholder="e.g. Nutrition"
                             />
@@ -151,7 +151,7 @@ const HealthTipCategories = () => {
                         <div>
                             <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">icon_name (Optional)</label>
                             <input
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500"
                                 value={formData.icon_name} onChange={(e) => setFormData({ ...formData, icon_name: e.target.value })}
                                 placeholder=""
                             />
@@ -161,7 +161,7 @@ const HealthTipCategories = () => {
                                 type="checkbox" id="cat_active"
                                 checked={formData.is_active}
                                 onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                                className="w-5 h-5 accent-purple-600 rounded-lg"
+                                className="w-5 h-5 accent-brand-600 rounded-lg"
                             />
                             <label htmlFor="cat_active" className="text-sm font-bold text-slate-700">Set as Active</label>
                         </div>
@@ -171,7 +171,7 @@ const HealthTipCategories = () => {
                         <button
                             onClick={handleAction}
                             disabled={actionLoading}
-                            className="flex-1 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 flex justify-center items-center gap-2 transition-all shadow-lg shadow-purple-100"
+                            className="flex-1 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 flex justify-center items-center gap-2 transition-all shadow-lg shadow-brand-100"
                         >
                             {actionLoading ? <Loader2 className="animate-spin" size={20} /> : 'Save Category'}
                         </button>

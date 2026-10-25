@@ -5,7 +5,7 @@ import {
   fetchAdmins, createAdmin, updateAdmin, deleteAdmin 
 } from '../../redux/AdminSlice';
 import { 
-  Plus, Search, Edit3, Trash2, ShieldCheck, X, 
+  Plus, Search, Edit3, Trash2, X, 
   Loader2, AlertTriangle, Check, Eye, EyeOff // Added Eye icons
 } from 'lucide-react';
 
@@ -114,25 +114,17 @@ const confirmDelete = async () => {
   };
 
   return (
-    <div className="bg-[#F9FAFB] min-h-screen">
+    <div>
       {/* Header */}
-      <div className="flex justify-between items-center mb-12">
-        <div className="flex items-center gap-5">
-          <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
-            <ShieldCheck className="text-purple-600" size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Administrators</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Access Control & Governance</p>
-            </div>
-          </div>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">System Administrators</h1>
+          <p className="text-slate-500 text-sm">Control admin access and roles.</p>
         </div>
         
         <button 
           onClick={() => openUpsert()}
-          className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+          className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
         >
           <Plus size={20} strokeWidth={3} />
           Create Admin
@@ -140,17 +132,17 @@ const confirmDelete = async () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-8 flex items-center gap-4">
+      <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-6 flex items-center gap-4">
         <div className="flex-1 relative group">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
           <input 
             type="text" placeholder="Search by name, email or phone..."
-            className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-purple-500/5 transition-all"
+            className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/5 transition-all"
             onChange={(e) => setFilters({...filters, search: e.target.value, page: 1})}
           />
         </div>
         <select 
-          className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
+          className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all"
           onChange={(e) => setFilters({...filters, status: e.target.value, page: 1})}
         >
           <option value="">All Statuses</option>
@@ -172,12 +164,12 @@ const confirmDelete = async () => {
           </thead>
           <tbody className="divide-y divide-slate-50">
             {loading ? (
-              <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={40} /></td></tr>
+              <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" size={40} /></td></tr>
             ) : admins.map((admin) => (
               <tr key={admin.id} className="group hover:bg-slate-50/50 transition-colors">
                 <td className="px-10 py-7">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 font-black text-lg">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 font-black text-lg">
                       {admin.first_name[0]}{admin.last_name[0]}
                     </div>
                     <div>
@@ -202,7 +194,7 @@ const confirmDelete = async () => {
                 </td>
                 <td className="px-10 py-7 text-right">
                   <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                    <button onClick={() => openUpsert(admin)} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-purple-600 hover:border-purple-100 transition-all">
+                    <button onClick={() => openUpsert(admin)} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-brand-600 hover:border-brand-100 transition-all">
                       <Edit3 size={18} />
                     </button>
                     <button onClick={() => { setTargetAdmin(admin); setIsDeleteModalOpen(true); }} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-red-500 hover:border-red-100 transition-all">
@@ -237,11 +229,11 @@ const confirmDelete = async () => {
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">First Name</label>
-                      <input required value={formData.first_name} onChange={(e) => setFormData({...formData, first_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                      <input required value={formData.first_name} onChange={(e) => setFormData({...formData, first_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-brand-500 transition-all" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Last Name</label>
-                      <input required value={formData.last_name} onChange={(e) => setFormData({...formData, last_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" />
+                      <input required value={formData.last_name} onChange={(e) => setFormData({...formData, last_name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-brand-500 transition-all" />
                     </div>
                   </div>
 
@@ -269,12 +261,12 @@ const confirmDelete = async () => {
                           value={formData.password} 
                           onChange={(e) => setFormData({...formData, password: e.target.value})} 
                           placeholder={targetAdmin ? "••••••••" : ""}
-                          className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" 
+                          className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-brand-500 transition-all" 
                         />
                         <button 
                           type="button" 
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-purple-600 transition-colors"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600 transition-colors"
                         >
                           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -288,7 +280,7 @@ const confirmDelete = async () => {
                         value={formData.password_confirmation} 
                         onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})} 
                         placeholder={targetAdmin ? "••••••••" : ""}
-                        className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-purple-500 transition-all" 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-[20px] p-4 font-bold text-slate-800 outline-none focus:border-brand-500 transition-all" 
                       />
                     </div>
                   </div>
@@ -317,8 +309,8 @@ const confirmDelete = async () => {
                           onClick={() => handleToggleRole(role)}
                           className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all flex items-center gap-2
                             ${formData.roles.includes(role) 
-                              ? 'bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-100' 
-                              : 'bg-white border-slate-100 text-slate-400 hover:border-purple-200'}`}
+                              ? 'bg-brand-600 border-brand-600 text-white shadow-lg shadow-brand-100' 
+                              : 'bg-white border-slate-100 text-slate-400 hover:border-brand-200'}`}
                         >
                           {formData.roles.includes(role) && <Check size={12} />}
                           {role.replace('manage_', '').replace('_', ' ')}

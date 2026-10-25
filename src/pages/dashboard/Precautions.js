@@ -63,7 +63,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
                 <button
                     type="button"
                     onClick={() => copyToClipboard(formData.id, "Precaution ID")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
                     title="Copy to clipboard"
                 >
                     <Copy size={16} />
@@ -77,7 +77,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Title</label>
                 <input
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     placeholder="e.g. Protect You and Your Baby"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -87,7 +87,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
             <div>
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Target Role</label>
                 <select
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     value={formData.target_role}
                     onChange={(e) => setFormData({ ...formData, target_role: e.target.value })}
                 >
@@ -101,7 +101,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Trigger Threshold</label>
                 <select
                     required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     value={formData.threshold_id}
                     onChange={(e) => setFormData({ ...formData, threshold_id: e.target.value })}
                 >
@@ -115,7 +115,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
             <div>
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Tier</label>
                 <select
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     value={formData.tier}
                     onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
                 >
@@ -129,7 +129,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
             <div>
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Send Number</label>
                 <select
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                     value={formData.send_number}
                     onChange={(e) => setFormData({ ...formData, send_number: e.target.value === '' ? '' : Number(e.target.value) })}
                 >
@@ -145,7 +145,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
             <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Push Notification Body</label>
             <textarea
                 required rows="4"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                 placeholder="Provide clear health advice..."
                 value={formData.body}
                 onChange={(e) => setFormData({ ...formData, body: e.target.value })}
@@ -157,7 +157,7 @@ const PrecautionFormBody = ({ modal, formData, setFormData, thresholds, error })
             <textarea
                 rows="3"
                 maxLength={160}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                 placeholder="Optional — falls back to Push Notification Body if left blank (≤160 chars)"
                 value={formData.sms_body}
                 onChange={(e) => setFormData({ ...formData, sms_body: e.target.value })}
@@ -287,7 +287,7 @@ const Precautions = () => {
             <button
                 onClick={onSubmit}
                 disabled={actionLoading}
-                className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
+                className="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
             >
                 {actionLoading ? <Loader2 className="animate-spin" size={20} /> : submitLabel}
             </button>
@@ -304,7 +304,7 @@ const Precautions = () => {
                 </div>
                 <button
                     onClick={() => setModal('add')}
-                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                    className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
                 >
                     <Plus size={20} /> Add Precaution
                 </button>
@@ -317,7 +317,7 @@ const Precautions = () => {
                     <input
                         type="text"
                         placeholder="Search precautions..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />
                 </div>
@@ -359,7 +359,7 @@ const Precautions = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
+                            <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" /></td></tr>
                         ) : list.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
                                 <td className="px-6 py-4 max-w-sm">
@@ -367,7 +367,7 @@ const Precautions = () => {
                                     <p className="text-xs text-slate-400 line-clamp-1">{item.body}</p>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
+                                    <span className="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-[10px] font-bold uppercase border border-brand-100">
                                         {item.target_role.replace('_', ' ')}
                                     </span>
                                 </td>
@@ -387,7 +387,7 @@ const Precautions = () => {
                                     {item.threshold?.name || '---'}
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-1">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Settings size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"><Settings size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>

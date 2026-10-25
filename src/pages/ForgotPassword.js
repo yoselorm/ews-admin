@@ -38,7 +38,7 @@ const AdminForgotPassword = () => {
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
-                        <KeyRound size={32} className="text-purple-600" strokeWidth={2} />
+                        <KeyRound size={32} className="text-brand-600" strokeWidth={2} />
                     </div>
                 </div>
 
@@ -78,7 +78,7 @@ const AdminForgotPassword = () => {
                                         required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition duration-200"
+                                        className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-transparent transition duration-200"
                                         placeholder="admin@healthcare.com"
                                     />
                                 </div>
@@ -87,7 +87,7 @@ const AdminForgotPassword = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200 disabled:opacity-70"
+                                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition duration-200 disabled:opacity-70"
                             >
                                 {loading ? (
                                     <Loader2 className="animate-spin mr-2" size={20} />
@@ -118,7 +118,7 @@ const AdminForgotPassword = () => {
                     <div className="mt-8 pt-6 border-t border-slate-100 text-center">
                         <Link
                             to="/"
-                            className="inline-flex items-center text-sm font-semibold text-purple-600 hover:text-purple-500 transition duration-200"
+                            className="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-500 transition duration-200"
                         >
                             <ArrowLeft size={16} className="mr-2" />
                             Back to Sign In

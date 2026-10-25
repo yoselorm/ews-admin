@@ -31,7 +31,7 @@ const TIER_META = {
 };
 
 // Order + styling for the role columns in each send grid — kept in line with the
-// purple/slate palette used across Thresholds & Precautions
+// brand/slate palette used across Thresholds & Precautions
 const ROLE_META = {
   pregnant_woman: {
     label: "Pregnant Woman",
@@ -177,7 +177,7 @@ const RoleCard = ({ role, message }) => {
               onClick={() => setView("body")}
               className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide transition-all ${
                 view === "body"
-                  ? "bg-purple-600 text-white"
+                  ? "bg-brand-600 text-white"
                   : "text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -187,7 +187,7 @@ const RoleCard = ({ role, message }) => {
               onClick={() => setView("sms")}
               className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide transition-all ${
                 view === "sms"
-                  ? "bg-purple-600 text-white"
+                  ? "bg-brand-600 text-white"
                   : "text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -374,7 +374,7 @@ const SendMatrix = () => {
               Threshold
             </label>
             <select
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
               value={thresholdId}
               onChange={(e) => setThresholdId(e.target.value)}
             >
@@ -392,7 +392,7 @@ const SendMatrix = () => {
               Community
             </label>
             <select
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
               value={communityId}
               onChange={(e) => setCommunityId(e.target.value)}
             >
@@ -411,7 +411,7 @@ const SendMatrix = () => {
             </label>
             <input
               type="date"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
               value={forecastDate}
               onChange={(e) => setForecastDate(e.target.value)}
             />
@@ -421,7 +421,7 @@ const SendMatrix = () => {
             <button
               onClick={handleApply}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 transition-all"
             >
               {loading ? (
                 <Loader2 className="animate-spin" size={18} />
@@ -452,7 +452,7 @@ const SendMatrix = () => {
 
       {loading && !data && (
         <div className="py-20 text-center">
-          <Loader2 className="animate-spin mx-auto text-purple-600" size={28} />
+          <Loader2 className="animate-spin mx-auto text-brand-600" size={28} />
         </div>
       )}
 
@@ -464,7 +464,7 @@ const SendMatrix = () => {
               <h2 className="text-slate-900 font-black text-lg">
                 {data.threshold?.name}
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full border border-purple-200 bg-purple-50 text-purple-600 text-[10px] font-bold uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full border border-brand-200 bg-brand-50 text-brand-600 text-[10px] font-bold uppercase tracking-wider">
                 Send Matrix
               </span>
             </div>
@@ -485,7 +485,7 @@ const SendMatrix = () => {
               <span className="px-2.5 py-1 rounded-md bg-white border border-slate-200">
                 {totalMessages} messages total
               </span>
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-50 border border-purple-100 text-purple-600 font-bold">
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-brand-50 border border-brand-100 text-brand-600 font-bold">
                 <MapPin size={11} />
                 {data.community?.name || "All communities"}
               </span>

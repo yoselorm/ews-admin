@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams,Link } from 'react-router-dom';
-import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import logo from '../assets/logo.png';
 import { clearStatus, resetPassword } from '../redux/AuthSlice';
 
 const AdminResetPassword = () => {
@@ -37,9 +38,7 @@ const AdminResetPassword = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="bg-purple-600 p-3 rounded-2xl shadow-lg shadow-purple-200">
-            <ShieldCheck size={40} color="white" strokeWidth={2.5} />
-          </div>
+          <img src={logo} alt="EWS logo" className="w-16 h-16" />
         </div>
         
         <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
@@ -74,7 +73,7 @@ const AdminResetPassword = () => {
                     required
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    className="block w-full pl-11 pr-12 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-purple-600 outline-none transition duration-200"
+                    className="block w-full pl-11 pr-12 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-brand-600 outline-none transition duration-200"
                     placeholder="••••••••"
                   />
                   <button
@@ -99,7 +98,7 @@ const AdminResetPassword = () => {
                     required
                     value={formData.password_confirmation}
                     onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})}
-                    className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-purple-600 outline-none transition duration-200"
+                    className="block w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-brand-600 outline-none transition duration-200"
                     placeholder="••••••••"
                   />
                 </div>
@@ -111,7 +110,7 @@ const AdminResetPassword = () => {
               <button
                 type="submit"
                 disabled={loading || formData.password !== formData.password_confirmation}
-                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none transition duration-200 disabled:opacity-70"
+                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 focus:outline-none transition duration-200 disabled:opacity-70"
               >
                 {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : "Reset Password"}
               </button>
@@ -129,7 +128,7 @@ const AdminResetPassword = () => {
               </p>
               <Link
                 to="/login"
-                className="block w-full py-3.5 px-4 bg-purple-600 text-white rounded-xl text-sm font-bold hover:bg-purple-700 transition duration-200 text-center shadow-md shadow-purple-100"
+                className="block w-full py-3.5 px-4 bg-brand-600 text-white rounded-xl text-sm font-bold hover:bg-brand-700 transition duration-200 text-center shadow-md shadow-brand-100"
               >
                 Continue to Login
               </Link>

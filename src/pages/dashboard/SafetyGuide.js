@@ -69,7 +69,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                         <button
                             type="button"
                             onClick={() => copyToClipboard(formData.id, "Safety Guide ID")}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
                             title="Copy to clipboard"
                         >
                             <Copy size={16} />
@@ -82,7 +82,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Guide Title</label>
                     <input
                         required
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         placeholder="e.g. Heatwave Preparation"
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -93,7 +93,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Category</label>
                     <select
                         required
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.category_id}
                         onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                     >
@@ -107,7 +107,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                 <div>
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Target Role</label>
                     <select
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.target_role}
                         onChange={(e) => setFormData({ ...formData, target_role: e.target.value })}
                     >
@@ -121,7 +121,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                 <div>
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Link Threshold</label>
                     <select
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.threshold_id}
                         onChange={(e) => setFormData({ ...formData, threshold_id: e.target.value })}
                     >
@@ -136,7 +136,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Sort Order</label>
                     <input
                         type="number"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.sort_order}
                         onChange={(e) => setFormData({ ...formData, sort_order: Number(e.target.value) })}
                     />
@@ -148,7 +148,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                 <textarea
                     required
                     rows="4"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand-500 transition-all resize-none"
                     placeholder="Provide detailed instructions..."
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -185,12 +185,12 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                         </div>
                     </div>
                 ) : (
-                    <label className="cursor-pointer flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl py-8 bg-slate-50 hover:border-purple-400 hover:bg-purple-50/30 transition-all group">
+                    <label className="cursor-pointer flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl py-8 bg-slate-50 hover:border-brand-400 hover:bg-brand-50/30 transition-all group">
                         <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
-                            <ImagePlus size={24} className="text-slate-400 group-hover:text-purple-500 transition-all" />
+                            <ImagePlus size={24} className="text-slate-400 group-hover:text-brand-500 transition-all" />
                         </div>
                         <div className="text-center">
-                            <p className="text-sm font-bold text-slate-600 group-hover:text-purple-600 transition-all">Click to upload image</p>
+                            <p className="text-sm font-bold text-slate-600 group-hover:text-brand-600 transition-all">Click to upload image</p>
                             <p className="text-xs text-slate-400 mt-0.5">PNG, JPG, WEBP up to 5MB</p>
                         </div>
                         <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -202,7 +202,7 @@ const GuideFormBody = ({ modal, formData, setFormData, thresholds, categories, e
                 <input
                     type="checkbox"
                     id="is_active"
-                    className="w-4 h-4 accent-purple-600 rounded"
+                    className="w-4 h-4 accent-brand-600 rounded"
                     checked={formData.is_active}
                     onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                 />
@@ -333,7 +333,7 @@ const SafetyGuides = () => {
     const FooterButtons = ({ onSubmit, submitLabel }) => (
         <div className="px-6 pb-6 flex gap-3">
             <button onClick={closeModal} className="flex-1 px-4 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-all">Cancel</button>
-            <button onClick={onSubmit} disabled={actionLoading} className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 flex justify-center items-center gap-2 transition-all">
+            <button onClick={onSubmit} disabled={actionLoading} className="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 flex justify-center items-center gap-2 transition-all">
                 {actionLoading ? <Loader2 className="animate-spin" size={20} /> : submitLabel}
             </button>
         </div>
@@ -352,9 +352,9 @@ const SafetyGuides = () => {
                         onClick={() => navigate('/dashboard/safety-categories')}
                         className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-5 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition-all shadow-sm"
                     >
-                        <Layers size={20} className="text-purple-500" /> Categories
+                        <Layers size={20} className="text-brand-500" /> Categories
                     </button>
-                    <button onClick={() => setModal('add')} className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-purple-200 hover:bg-purple-700 transition-all">
+                    <button onClick={() => setModal('add')} className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-brand-200 hover:bg-brand-700 transition-all">
                         <Plus size={20} /> Add Guide
                     </button>
                 </div>
@@ -366,7 +366,7 @@ const SafetyGuides = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         type="text" placeholder="Search guides..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />
                 </div>
@@ -385,7 +385,7 @@ const SafetyGuides = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
+                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" /></td></tr>
                         ) : list?.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
                                 <td className="px-6 py-4">
@@ -398,7 +398,7 @@ const SafetyGuides = () => {
                                                 className="w-11 h-11 rounded-xl object-cover border border-slate-100 shrink-0"
                                             />
                                         ) : (
-                                            <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl shrink-0">
+                                            <div className="p-2.5 bg-brand-50 text-brand-600 rounded-xl shrink-0">
                                                 <BookOpen size={20} />
                                             </div>
                                         )}
@@ -410,7 +410,7 @@ const SafetyGuides = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 bg-slate-100/50 w-fit px-3 py-1.5 rounded-lg border border-slate-200/50">
-                                        <Tag size={14} className="text-purple-500" />
+                                        <Tag size={14} className="text-brand-500" />
                                         {item.category?.name || 'General'}
                                     </div>
                                 </td>
@@ -421,7 +421,7 @@ const SafetyGuides = () => {
                                     }
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-1">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Settings size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"><Settings size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>

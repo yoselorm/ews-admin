@@ -52,7 +52,7 @@ const Overview = () => {
           title="Health Workers" 
           value={stats?.total_health_workers || '0'} 
           trend="Active" 
-          icon={Activity} color="bg-purple-500" 
+          icon={Activity} color="bg-brand-500" 
         />
         <StatCard 
           title="Active Alerts" 
@@ -71,10 +71,10 @@ const Overview = () => {
       <div className="bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-50 flex justify-between items-center">
           <h2 className="font-bold text-slate-900 flex items-center gap-2">
-            <Clock size={18} className="text-purple-500" />
+            <Clock size={18} className="text-brand-500" />
             Recent System Activity
           </h2>
-          <Link to="audit-logs" className="text-purple-600 text-sm font-bold hover:underline flex items-center gap-1">
+          <Link to="audit-logs" className="text-brand-600 text-sm font-bold hover:underline flex items-center gap-1">
             View All <ExternalLink size={14} />
           </Link>
         </div>

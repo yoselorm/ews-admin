@@ -191,7 +191,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
             <button
               type="button"
               onClick={() => copyToClipboard(formData.id, "Threshold ID")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
               title="Copy to clipboard"
             >
               <Copy size={16} />
@@ -208,7 +208,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
         <input
           required
           value={formData.name}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           placeholder="e.g. Extreme Heat"
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
@@ -221,7 +221,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
         </label>
         <select
           value={formData.parameter}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           onChange={(e) =>
             setFormData({ ...formData, parameter: e.target.value })
           }
@@ -241,7 +241,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
         </label>
         <select
           value={formData.risk_level}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           onChange={(e) =>
             setFormData({ ...formData, risk_level: e.target.value })
           }
@@ -260,7 +260,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
         </label>
         <select
           value={formData.operator}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           onChange={(e) =>
             setFormData({ ...formData, operator: e.target.value })
           }
@@ -282,7 +282,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
             type="number"
             required
             value={formData.threshold_value}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
             placeholder="35"
             onChange={(e) =>
               setFormData({
@@ -293,7 +293,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
           />
           <input
             value={formData.unit}
-            className="w-20 text-center bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-500 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-20 text-center bg-slate-100 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-500 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
             placeholder="°C"
             onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
           />
@@ -307,7 +307,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
         </label>
         <select
           value={formData.is_active ? "true" : "false"}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
           onChange={(e) =>
             setFormData({ ...formData, is_active: e.target.value === "true" })
           }
@@ -327,7 +327,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
             type="number"
             min="0"
             value={formData.gestational_age_min_weeks}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
             placeholder="Min"
             onChange={(e) =>
               setFormData({
@@ -341,7 +341,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
             type="number"
             min="0"
             value={formData.gestational_age_max_weeks}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
             placeholder="Max"
             onChange={(e) =>
               setFormData({
@@ -362,7 +362,7 @@ const ThresholdFormBody = ({ modal, formData, setFormData, error }) => (
       <textarea
         rows="2"
         value={formData.description}
-        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none"
+        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-brand-500 transition-all resize-none"
         placeholder="What should happen when this triggers?"
         onChange={(e) =>
           setFormData({ ...formData, description: e.target.value })
@@ -573,7 +573,7 @@ const Thresholds = () => {
       <button
         onClick={onSubmit}
         disabled={actionLoading}
-        className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
+        className="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
       >
         {actionLoading ? (
           <Loader2 className="animate-spin" size={20} />
@@ -601,7 +601,7 @@ const Thresholds = () => {
             setFormData(DEFAULT_FORM);
             setModal("add");
           }}
-          className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+          className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
         >
           <Plus size={20} />
           Add Threshold
@@ -635,7 +635,7 @@ const Thresholds = () => {
               <tr>
                 <td colSpan="5" className="text-center py-16">
                   <Loader2
-                    className="animate-spin mx-auto text-purple-500"
+                    className="animate-spin mx-auto text-brand-500"
                     size={28}
                   />
                 </td>
@@ -664,7 +664,7 @@ const Thresholds = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <code className="bg-slate-100 px-2 py-1 rounded text-purple-600 text-xs font-mono">
+                    <code className="bg-slate-100 px-2 py-1 rounded text-brand-600 text-xs font-mono">
                       {item.parameter} {item.operator} {item.threshold_value}
                       {item.unit}
                     </code>

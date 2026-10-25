@@ -5,7 +5,7 @@ import {
     fetchLanguages, createLanguage, updateLanguage, deleteLanguage
 } from '../../redux/LanguageSlice';
 import {
-    Plus, Search, Edit3, Trash2, Languages, X,
+    Plus, Search, Edit3, Trash2, X,
     Loader2, AlertTriangle,
 } from 'lucide-react';
 
@@ -73,25 +73,17 @@ const confirmDelete = async () => {
     };
 
     return (
-        <div className=" bg-[#F9FAFB] min-h-screen">
+        <div>
             {/* Header */}
-            <div className="flex justify-between items-center mb-12">
-                <div className="flex items-center gap-5">
-                    <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
-                        <Languages className="text-purple-600" size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Languages</h1>
-                        <div className="flex items-center gap-2 mt-1">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Global Localization Hub</p>
-                        </div>
-                    </div>
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">System Languages</h1>
+                  <p className="text-slate-500 text-sm">Manage the languages available across the platform.</p>
                 </div>
 
                 <button
                     onClick={() => openUpsert()}
-                    className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                    className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
                 >
                     <Plus size={20} strokeWidth={3} />
                     Add Language
@@ -99,18 +91,18 @@ const confirmDelete = async () => {
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-8 flex items-center gap-4">
+            <div className="bg-white/80 backdrop-blur-md p-4 rounded-[28px] border border-white shadow-sm mb-6 flex items-center gap-4">
                 <div className="flex-1 relative group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors" size={20} />
                     <input
                         type="text"
                         placeholder="Search language name or code..."
-                        className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-purple-500/5 focus:border-purple-500 transition-all"
+                        className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/5 focus:border-brand-500 transition-all"
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />
                 </div>
                 <select
-                    className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-purple-500/5 transition-all"
+                    className="bg-slate-50/50 border border-slate-100 rounded-2xl px-6 py-4 font-bold text-slate-600 outline-none focus:ring-4 focus:ring-brand-500/5 transition-all"
                     onChange={(e) => setFilters({ ...filters, is_active: e.target.value, page: 1 })}
                 >
                     <option value="">All Statuses</option>
@@ -132,12 +124,12 @@ const confirmDelete = async () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={40} /></td></tr>
+                            <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" size={40} /></td></tr>
                         ) : languages.map((lang) => (
                             <tr key={lang.id} className="group hover:bg-slate-50/50 transition-colors">
                                 <td className="px-10 py-7">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 font-black">
+                                        <div className="w-12 h-12 rounded-2xl bg-brand-50 flex items-center justify-center text-brand-600 font-black">
                                             {lang.code.toUpperCase()}
                                         </div>
                                         <span className="font-extrabold text-slate-800 text-lg">{lang.name}</span>
@@ -154,7 +146,7 @@ const confirmDelete = async () => {
                                 </td>
                                 <td className="px-10 py-7 text-right">
                                     <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <button onClick={() => openUpsert(lang)} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-purple-600 hover:border-purple-100 transition-all">
+                                        <button onClick={() => openUpsert(lang)} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-brand-600 hover:border-brand-100 transition-all">
                                             <Edit3 size={18} />
                                         </button>
                                         <button onClick={() => openDelete(lang)} className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl text-slate-400 hover:text-red-500 hover:border-red-100 transition-all">
@@ -201,7 +193,7 @@ const confirmDelete = async () => {
                                             <input
                                                 required placeholder="e.g. English" value={formData.name}
                                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all"
                                             />
                                         </div>
 
@@ -210,7 +202,7 @@ const confirmDelete = async () => {
                                             <input
                                                 required maxLength={2} placeholder="en" value={formData.code}
                                                 onChange={(e) => setFormData({ ...formData, code: e.target.value.toLowerCase() })}
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500 transition-all uppercase"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-[24px] p-6 font-bold text-slate-800 outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all uppercase"
                                             />
                                         </div>
 

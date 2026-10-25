@@ -59,7 +59,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                 <button
                     type="button"
                     onClick={() => copyToClipboard(formData.id, "Health Tip ID")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-purple-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-brand-600 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-slate-100"
                     title="Copy to clipboard"
                 >
                     <Copy size={16} />
@@ -70,7 +70,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Tip Title</label>
                     <input
                         required
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         placeholder="e.g. Benefits of hydration"
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -80,7 +80,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                 <div>
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Trimester</label>
                     <select
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.trimester}
                         onChange={(e) => setFormData({ ...formData, trimester: e.target.value })}
                     >
@@ -94,7 +94,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                     <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Category</label>
                     <select
                         required
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         value={formData.category_id}
                         onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                     >
@@ -110,7 +110,7 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                 <label className="text-xs font-bold text-slate-500 uppercase mb-1 block tracking-wider">Health Content</label>
                 <textarea
                     required rows="5"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-brand-500 transition-all resize-none"
                     placeholder="Write the detailed health tip here..."
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -145,12 +145,12 @@ const HealthTipFormBody = ({modal, formData, setFormData, imageFile, setImageFil
                         </div>
                     </div>
                 ) : (
-                    <label className="cursor-pointer flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl py-8 bg-slate-50 hover:border-purple-400 hover:bg-purple-50/30 transition-all group">
+                    <label className="cursor-pointer flex flex-col items-center justify-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl py-8 bg-slate-50 hover:border-brand-400 hover:bg-brand-50/30 transition-all group">
                         <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
-                            <ImagePlus size={24} className="text-slate-400 group-hover:text-purple-500 transition-all" />
+                            <ImagePlus size={24} className="text-slate-400 group-hover:text-brand-500 transition-all" />
                         </div>
                         <div className="text-center">
-                            <p className="text-sm font-bold text-slate-600 group-hover:text-purple-600 transition-all">Click to upload image</p>
+                            <p className="text-sm font-bold text-slate-600 group-hover:text-brand-600 transition-all">Click to upload image</p>
                             <p className="text-xs text-slate-400 mt-0.5">PNG, JPG, WEBP up to 5MB</p>
                         </div>
                         <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -303,11 +303,11 @@ const HealthTips = () => {
                         onClick={() => navigate('/dashboard/health-tip-categories')}
                         className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-5 py-2.5 rounded-xl font-bold hover:bg-slate-50 transition-all shadow-sm"
                     >
-                        <Layers size={20} className="text-purple-500" /> Categories
+                        <Layers size={20} className="text-brand-500" /> Categories
                     </button>
                     <button
                         onClick={() => setModal('add')}
-                        className="flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+                        className="flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200"
                     >
                         <Plus size={20} /> Add New Tip
                     </button>
@@ -321,7 +321,7 @@ const HealthTips = () => {
                     <input
                         type="text"
                         placeholder="Search tips..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 transition-all"
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />
                 </div>
@@ -357,7 +357,7 @@ const HealthTips = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {loading ? (
-                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" /></td></tr>
+                            <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" /></td></tr>
                         ) : list.map((item) => (
                             <tr key={item.id} className="hover:bg-slate-50/30 transition-colors">
                                 <td className="px-6 py-4 max-w-sm">
@@ -370,8 +370,8 @@ const HealthTips = () => {
                                                 className="w-11 h-11 rounded-xl object-cover border border-slate-100 shrink-0"
                                             />
                                         ) : (
-                                            <div className="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
-                                                <ImageOff size={18} className="text-purple-300" />
+                                            <div className="w-11 h-11 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                                                <ImageOff size={18} className="text-brand-300" />
                                             </div>
                                         )}
                                         <div className="min-w-0">
@@ -381,7 +381,7 @@ const HealthTips = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                   <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase border border-purple-100">
+                                   <span className="px-3 py-1 bg-brand-50 text-brand-600 rounded-full text-[10px] font-bold uppercase border border-brand-100">
     T{item.trimester} • {item.category?.name ?? item.category ?? '—'}
 </span>
                                 </td>
@@ -397,7 +397,7 @@ const HealthTips = () => {
                                     )}
                                 </td>
                                 <td className="px-6 py-4 text-right space-x-1">
-                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"><Settings size={18} /></button>
+                                    <button onClick={() => openEdit(item)} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"><Settings size={18} /></button>
                                     <button onClick={() => { setSelectedItem(item); setModal('delete'); }} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={18} /></button>
                                 </td>
                             </tr>
@@ -429,7 +429,7 @@ const HealthTips = () => {
                         <button
                             onClick={handleAction}
                             disabled={actionLoading}
-                            className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
+                            className="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 disabled:opacity-50 transition-all flex justify-center items-center gap-2"
                         >
                             {actionLoading ? <Loader2 className="animate-spin" size={20} /> : (modal === 'add' ? 'Create Tip' : 'Update Tip')}
                         </button>

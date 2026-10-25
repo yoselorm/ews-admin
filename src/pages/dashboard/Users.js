@@ -14,7 +14,7 @@ import Pagination from '../../components/Pagination';
 import {
     Search, Plus, Eye, Edit3, Trash2, Filter,
     User, Loader2, X,
-    Heart, ShieldCheck, Briefcase, AlertTriangle, UserCheck, Baby, PlusCircle, MinusCircle
+    Heart, ShieldCheck, Briefcase, AlertTriangle, Baby, PlusCircle, MinusCircle
 } from 'lucide-react';
 import toast from '../../components/Toast';
 
@@ -127,7 +127,7 @@ const PregnantFields = ({ formData, setFormData, addCondition, removeCondition, 
         <FW className="sm:col-span-2">
             <div className="flex items-center justify-between mb-2">
                 <FL>Medical Conditions</FL>
-                <button type="button" onClick={addCondition} className="flex items-center gap-1 text-[10px] font-black text-purple-600 hover:text-purple-700 uppercase tracking-wider">
+                <button type="button" onClick={addCondition} className="flex items-center gap-1 text-[10px] font-black text-brand-600 hover:text-brand-700 uppercase tracking-wider">
                     <PlusCircle size={14} /> Add
                 </button>
             </div>
@@ -446,33 +446,28 @@ const UserManagement = () => {
         }
     };
     return (
-        <div className="p-4 sm:p-6 lg:p-10 bg-[#FBFBFB] min-h-screen">
+        <div>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sm:mb-10">
-                <div className="flex items-center gap-4">
-                    <div className="bg-slate-900 p-3 sm:p-4 rounded-3xl text-white shadow-xl shadow-slate-200 shrink-0">
-                        <UserCheck size={26} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">User Management</h1>
-                        <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[3px]">System Directory & Enrollment</p>
-                    </div>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
+                  <p className="text-slate-500 text-sm">Browse, enroll and manage registered members.</p>
                 </div>
                 <button
                     onClick={() => { setEditMode(false); setFormData(initialForm); setActiveModal('form'); }}
-                    className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-purple-700 transition-all shadow-lg shadow-purple-100 w-full sm:w-auto"
+                    className="bg-brand-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-brand-700 transition-all shadow-lg shadow-brand-100 w-full sm:w-auto"
                 >
                     <Plus size={20} strokeWidth={3} /> New Registration
                 </button>
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white p-3 sm:p-4 rounded-[32px] border border-slate-100 shadow-sm mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="bg-white p-3 sm:p-4 rounded-[32px] border border-slate-100 shadow-sm mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="flex-1 relative">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                     <input
                         type="text" placeholder="Search by name, phone or email..."
-                        className="w-full bg-slate-50 border-none rounded-2xl py-3 sm:py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-500/10 transition-all"
+                        className="w-full bg-slate-50 border-none rounded-2xl py-3 sm:py-4 pl-14 pr-6 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-brand-500/10 transition-all"
                         value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleFilter()}
                     />
@@ -507,7 +502,7 @@ const UserManagement = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {usersLoading ? (
-                                <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-purple-600" size={32} /></td></tr>
+                                <tr><td colSpan="4" className="py-32 text-center"><Loader2 className="animate-spin mx-auto text-brand-600" size={32} /></td></tr>
                             ) : userList.length === 0 ? (
                                 <tr><td colSpan="4" className="py-32 text-center text-sm font-bold text-slate-300">No users found</td></tr>
                             ) : userList?.map(user => {
@@ -536,7 +531,7 @@ const UserManagement = () => {
                                         </td>
                                         <td className="px-6 lg:px-10 py-6 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-purple-600 transition-all shadow-sm"><Eye size={18} /></button>
+                                                <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-brand-600 transition-all shadow-sm"><Eye size={18} /></button>
                                                 <button onClick={() => openEdit(user)} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-blue-600 transition-all shadow-sm"><Edit3 size={18} /></button>
                                                 <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2.5 bg-white border border-slate-100 rounded-xl text-slate-300 hover:text-red-500 transition-all shadow-sm"><Trash2 size={18} /></button>
                                             </div>
@@ -551,7 +546,7 @@ const UserManagement = () => {
                 {/* Mobile cards */}
                 <div className="md:hidden divide-y divide-slate-50">
                     {usersLoading ? (
-                        <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-purple-600" size={32} /></div>
+                        <div className="py-24 flex justify-center"><Loader2 className="animate-spin text-brand-600" size={32} /></div>
                     ) : userList.length === 0 ? (
                         <div className="py-16 text-center text-sm font-bold text-slate-300">No users found</div>
                     ) : userList?.map(user => {
@@ -573,7 +568,7 @@ const UserManagement = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-1 shrink-0">
-                                    <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2 rounded-xl text-slate-300 hover:text-purple-600 hover:bg-purple-50 transition-all"><Eye size={17} /></button>
+                                    <button onClick={() => { setSelectedUser(user); setActiveModal('view'); }} className="p-2 rounded-xl text-slate-300 hover:text-brand-600 hover:bg-brand-50 transition-all"><Eye size={17} /></button>
                                     <button onClick={() => openEdit(user)} className="p-2 rounded-xl text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-all"><Edit3 size={17} /></button>
                                     <button onClick={() => { setSelectedUser(user); setActiveModal('delete'); }} className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"><Trash2 size={17} /></button>
                                 </div>
@@ -618,7 +613,7 @@ const UserManagement = () => {
                                         <button
                                             key={r} type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, role: r }))}
-                                            className={`flex-1 min-w-[calc(50%-4px)] sm:min-w-0 py-3 sm:py-4 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${formData.role === r ? 'bg-white text-purple-600 shadow-sm border border-purple-100' : 'text-slate-400 hover:text-slate-500'}`}
+                                            className={`flex-1 min-w-[calc(50%-4px)] sm:min-w-0 py-3 sm:py-4 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${formData.role === r ? 'bg-white text-brand-600 shadow-sm border border-brand-100' : 'text-slate-400 hover:text-slate-500'}`}
                                         >
                                             {r.replace(/_/g, ' ')}
                                         </button>
@@ -661,7 +656,7 @@ const UserManagement = () => {
 
                                 {/* Role-specific fields — stable component references, no re-mounting */}
                                 <div className="p-6 sm:p-10 bg-slate-50 rounded-[32px] sm:rounded-[40px] border border-slate-100 space-y-8">
-                                    <h4 className="text-[10px] font-black text-purple-600 uppercase tracking-[3px] border-b border-slate-200 pb-4 flex items-center gap-2">
+                                    <h4 className="text-[10px] font-black text-brand-600 uppercase tracking-[3px] border-b border-slate-200 pb-4 flex items-center gap-2">
                                         <Filter size={14} /> {formData.role?.replace(/_/g, ' ')} Profile Details
                                     </h4>
                                     {formData.role === 'pregnant_woman' && (
@@ -739,7 +734,7 @@ const UserManagement = () => {
                                 </div>
                                 {selectedUser.profile && Object.keys(selectedUser.profile).length > 0 && (
                                     <div className="space-y-4">
-                                        <p className="text-[10px] font-black text-purple-600 uppercase tracking-[3px] border-b border-slate-100 pb-2">
+                                        <p className="text-[10px] font-black text-brand-600 uppercase tracking-[3px] border-b border-slate-100 pb-2">
                                             {selectedUser.role?.replace(/_/g, ' ')} Details
                                         </p>
                                         <div className="grid grid-cols-2 gap-4">
